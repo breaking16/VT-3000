@@ -1,0 +1,13 @@
+.fullpage {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.fullpage__section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 40px;
+}

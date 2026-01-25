@@ -1,0 +1,15 @@
+// src\components\custom\test\test.json
+[
+  {
+    "title": "",
+    "value": "My Portfolio Project"
+  },
+  {
+    "text": "",
+    "value": "Preview section rendered via VT-3000 templater"
+  },
+  {
+    "image": "",
+    "value": "/src/assets/img/cover.jpg"
+  }
+]

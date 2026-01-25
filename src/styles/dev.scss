@@ -1,0 +1,32 @@
+// src\styles\dev.scss
+/* dev-only visibility */
+[data-dev-only] {
+  display: none;
+}
+
+.is-dev [data-dev-only] {
+  display: block;
+}
+
+/* DEV toggle button */
+.dev-toggle {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9999;
+}
+
+.dev-toggle__btn {
+  background: #7e74f1;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.dev-toggle__btn:hover {
+  background: #6b62e6;
+}

@@ -1,0 +1,62 @@
+<section class="dev-block">
+  <h2>Grid Container Pattern</h2>
+  <p>
+    Канонічний патерн для header / footer / section / hero.<br />
+    Фон — на всю ширину, контент — в контейнері.
+  </p>
+
+  <!-- HEADER DEMO -->
+  <div class="demo-header">
+    <div class="demo-header__inner">
+      <strong>LOGO</strong>
+      <nav class="demo-header__nav">
+        <a href="#">Home</a>
+        <a href="#">Contacts</a>
+      </nav>
+    </div>
+  </div>
+
+  <pre><code>
+&lt;header class="header"&gt;
+  &lt;div class="header__inner"&gt;
+    ...
+  &lt;/div&gt;
+&lt;/header&gt;
+  </code></pre>
+
+  <pre><code>
+// SCSS
+.header {
+  grid-column: 1 / -1;
+}
+
+.header__inner {
+  @include gridContainer();
+}
+  </code></pre>
+</section>
+
+<style>
+  .dev-block {
+    margin: 40px 0;
+  }
+
+  .demo-header {
+    background: #0f0f1a;
+    color: #fff;
+  }
+
+  .demo-header__inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 20px 0;
+    max-width: 1170px;
+    margin: 0 auto;
+  }
+
+  .demo-header__nav {
+    display: flex;
+    gap: 16px;
+  }
+</style>

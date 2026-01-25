@@ -1,0 +1,17 @@
+// src/styles/mixins/_units.scss
+@use "sass:math";
+
+// px → rem
+@function rem($px, $base: 16) {
+  @return math.div($px, $base) * 1rem;
+}
+
+// px → em
+@function em($px, $base: 16) {
+  @return math.div($px, $base) * 1em;
+}
+
+// px → %
+@function percent($px, $from: 100) {
+  @return math.div($px, $from) * 100%;
+}

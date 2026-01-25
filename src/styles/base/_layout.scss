@@ -1,0 +1,79 @@
+// src\styles\base\_layout.scss
+@use "sass:math";
+@use "../vars" as *;
+
+/* ============================
+   WRAPPER
+============================ */
+.wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper>main {
+  flex: 1 1 auto;
+}
+
+/* ============================
+   CONTAINERS
+============================ */
+
+.container {
+  max-width: $containerWidth;
+  padding-inline: $containerPadding;
+  margin-inline: auto;
+}
+
+.container-fluid {
+  width: 100%;
+  padding-inline: $containerPadding;
+}
+
+/* ============================
+   PAGE SECTIONS
+============================ */
+
+$page-section-lg: 96px;
+$page-section-md: 72px;
+$page-section-sm: 48px;
+
+.page-section {
+  padding-block: $page-section-lg;
+
+  @media (max-width: 1024px) {
+    padding-block: $page-section-md;
+  }
+
+  @media (max-width: 768px) {
+    padding-block: $page-section-sm;
+  }
+}
+
+.page-section--tight {
+  padding-block: calc($page-section-sm * 0.75);
+}
+
+.page-section--wide {
+  padding-block: calc($page-section-lg * 1.35);
+}
+
+/* ============================
+   CONTENT WRAPPER
+============================ */
+
+$content-narrow: 760px;
+$content-default: 960px;
+
+.content-wrap {
+  max-width: $content-default;
+  margin-inline: auto;
+}
+
+.content-wrap--narrow {
+  max-width: $content-narrow;
+}
+
+.content-wrap--wide {
+  max-width: none;
+}

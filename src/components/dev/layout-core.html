@@ -1,0 +1,34 @@
+<section class="dev-block">
+  <h2>Layout Core</h2>
+  <p>Базовий каркас сайту. Підключається автоматично.</p>
+
+  <h3>1️⃣ Body states</h3>
+  <pre><code>body.lock    // блокує скрол (popup, menu)
+body.loaded  // сайт завантажений</code></pre>
+
+  <h3>2️⃣ Wrapper</h3>
+  <pre><code>&lt;body&gt;
+  &lt;div class="wrapper"&gt;
+    &lt;header&gt;...&lt;/header&gt;
+    &lt;main&gt;...&lt;/main&gt;
+    &lt;footer&gt;...&lt;/footer&gt;
+  &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+
+  <p>✔ притискає footer<br>✔ фіксить sliders / overflow</p>
+
+  <h3>3️⃣ gridContainer (рекомендовано)</h3>
+  <pre><code>.header__inner {
+  @include gridContainer();
+}</code></pre>
+
+  <pre><code>&lt;div class="header__inner"&gt;
+  ...
+&lt;/div&gt;</code></pre>
+
+  <p>
+    ✔ явний<br>
+    ✔ не ламає grid<br>
+    ✔ працює з dynamic / fullpage
+  </p>
+</section>

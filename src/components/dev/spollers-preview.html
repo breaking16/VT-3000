@@ -1,0 +1,78 @@
+<section class="dev-block">
+  <h2>Spollers — DEMO</h2>
+  <p>Перевірка режимів роботи компонента.</p>
+
+  <!-- ==========================
+       MODE: працює завжди
+  ========================== -->
+  <h3>🔹 Basic (always enabled)</h3>
+
+  <div class="spollers" data-ww-spollers>
+    <div class="spollers__item">
+      <button class="spollers__title" type="button">Basic #1</button>
+      <div class="spollers__body">Контент Basic 1</div>
+    </div>
+
+    <div class="spollers__item">
+      <button class="spollers__title" type="button">Basic #2</button>
+      <div class="spollers__body">Контент Basic 2</div>
+    </div>
+  </div>
+
+
+  <!-- ==========================
+       MODE: one-open
+  ========================== -->
+  <h3>🔹 One-open mode</h3>
+
+  <div class="spollers" data-ww-spollers data-ww-spollers-one>
+    <div class="spollers__item">
+      <button class="spollers__title" type="button">One-open #1</button>
+      <div class="spollers__body">Контент One-open 1</div>
+    </div>
+
+    <div class="spollers__item">
+      <button class="spollers__title" type="button">One-open #2</button>
+      <div class="spollers__body">Контент One-open 2</div>
+    </div>
+  </div>
+
+
+  <!-- ==========================
+       MODE: breakpoint max
+       працює ДО 768px
+  ========================== -->
+  <h3>🔹 Adaptive — 768,max (mobile-first)</h3>
+
+  <div class="spollers" data-ww-spollers="768,max">
+    <div class="spollers__item">
+      <button class="spollers__title" type="button">Mobile #1</button>
+      <div class="spollers__body">Працює тільки до 768px</div>
+    </div>
+
+    <div class="spollers__item">
+      <button class="spollers__title" type="button">Mobile #2</button>
+      <div class="spollers__body">Понад 768px — контент розкритий</div>
+    </div>
+  </div>
+
+
+  <!-- ==========================
+       MODE: breakpoint min
+       працює ВІД 992px
+  ========================== -->
+  <h3>🔹 Adaptive — 992,min (desktop mode)</h3>
+
+  <div class="spollers" data-ww-spollers="992,min">
+    <div class="spollers__item">
+      <button class="spollers__title" type="button">Desktop #1</button>
+      <div class="spollers__body">Працює лише від 992px</div>
+    </div>
+
+    <div class="spollers__item">
+      <button class="spollers__title" type="button">Desktop #2</button>
+      <div class="spollers__body">Менше 992px — контент відкритий</div>
+    </div>
+  </div>
+
+</section>

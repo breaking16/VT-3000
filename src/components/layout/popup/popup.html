@@ -1,0 +1,42 @@
+<!-- trigger -->
+<button class="btn" type="button" data-popup-open="popup-example">
+  Open popup
+</button>
+
+<!-- popup -->
+<div class="popup" id="popup-example" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="popup__overlay" data-popup-close></div>
+
+  <div class="popup__content" role="document">
+    <button class="popup__close" type="button" aria-label="Close popup" data-popup-close>
+      ×
+    </button>
+
+    <!-- ⬇️ ТУТ ТИ ПИШЕШ СВІЙ КОНТЕНТ -->
+    <h2>Popup title</h2>
+    <p>Popup works 🎉</p>
+  </div>
+</div>
+
+
+<!-- ←←← HTML-структура Popup 2.1 (Focus Trap + inert) →→→ -->
+
+<!-- Trigger -->
+<button type="button" class="btn" data-popup-open="popup-example">
+  Open popup
+</button>
+
+<!-- Popup -->
+<div class="popup" id="popup-example" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="popup__overlay" data-popup-close></div>
+
+  <div class="popup__content" role="document">
+    <button class="popup__close" type="button" aria-label="Close popup" data-popup-close>
+      ×
+    </button>
+
+    <!-- CONTENT -->
+    <h2>Popup title</h2>
+    <p>Popup content goes here</p>
+  </div>
+</div>

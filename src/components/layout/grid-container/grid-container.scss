@@ -1,0 +1,15 @@
+// src/components/layout/grid-container/grid-container.scss
+
+.grid-container {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(16px, 1fr) [content-start] minmax(0, 1200px) [content-end] minmax(16px, 1fr) [full-end];
+}
+
+.grid-container>* {
+  grid-column: content;
+}
+
+.grid-container--full>* {
+  grid-column: full;
+}

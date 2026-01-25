@@ -1,0 +1,28 @@
+<!-- src\contacts.html -->
+
+<layout src="@components/templates/main/main.html" locals='{
+  "title": "Contacts",
+  "lang": "en",
+  "active": "contacts"
+
+
+}'>
+
+  <block name="header">
+    <include src="@components/layout/header/header.html" locals='{
+      "active": "contacts",
+      "home": "false"
+    }'>
+    </include>
+  </block>
+
+
+  <block name="main">
+    <include src="@components/pages/contacts/contacts.html" locals='{}'></include>
+  </block>
+
+  <block name="footer">
+    <include src="@components/layout/footer/footer.html" locals='{}'></include>
+  </block>
+
+</layout>

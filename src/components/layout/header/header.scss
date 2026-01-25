@@ -1,0 +1,134 @@
+// src\components\layout\header\header.scss
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #111;
+  color: #fff;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+
+  &.is-scrolled {
+    background: #083d1e;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  }
+}
+
+
+.header__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+
+.header__spacer {
+  flex: 1 1 auto;
+}
+
+.header__logo {
+  font-weight: 700;
+  text-decoration: none;
+  color: inherit;
+}
+
+
+
+.header__nav {
+  display: none;
+
+  ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
+
+    &.is-active {
+      text-decoration: underline;
+    }
+  }
+}
+
+
+
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+
+.menu-toggle {
+  --w: 22px;
+  --h: 2px;
+
+  position: relative;
+  width: var(--w);
+  height: 18px;
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  .menu-toggle__bar,
+  .menu-toggle__bar::before,
+  .menu-toggle__bar::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: var(--h);
+    background: #fff;
+    border-radius: 2px;
+    transition: transform .25s ease, opacity .25s ease;
+  }
+
+  .menu-toggle__bar::before {
+    transform: translateY(-6px);
+  }
+
+  .menu-toggle__bar::after {
+    transform: translateY(6px);
+  }
+
+  &.is-active .menu-toggle__bar {
+    transform: rotate(45deg);
+  }
+
+  &.is-active .menu-toggle__bar::before {
+    opacity: 0;
+  }
+
+  &.is-active .menu-toggle__bar::after {
+    transform: rotate(-90deg);
+  }
+}
+
+/* DESKTOP ≥ 768px */
+@media (min-width: 768px) {
+  .header__nav {
+    display: block;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+}
+
+/* MOBILE < 768px */
+@media (max-width: 767px) {
+  .header__nav {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+}

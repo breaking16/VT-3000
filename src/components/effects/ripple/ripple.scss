@@ -1,0 +1,22 @@
+// src\components\effects\ripple\ripple.scss
+[data-ww-ripple] {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  opacity: .6;
+  background: rgba(255, 255, 255, .35);
+  pointer-events: none;
+  animation: ripple .45s ease-out forwards;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}

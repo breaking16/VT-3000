@@ -1,0 +1,15 @@
+/* src/components/layout/overlay/overlay.scss */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900; // menu/popup should be above this
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+
+  &.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

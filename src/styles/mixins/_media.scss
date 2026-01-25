@@ -1,0 +1,13 @@
+// src/styles/mixins/_media.scss
+
+@mixin up($width) {
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin down($width) {
+  @media (max-width: $width) {
+    @content;
+  }
+}

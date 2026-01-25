@@ -1,0 +1,30 @@
+<section class="dev-block">
+  <h2>Footer</h2>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <span>© 2025</span>
+      <span>vt-3000</span>
+    </div>
+  </footer>
+
+  <pre><code>
+&lt;footer class="footer"&gt;
+  &lt;div class="footer__inner"&gt;
+    ...
+  &lt;/div&gt;
+&lt;/footer&gt;
+  </code></pre>
+</section>
+
+<style>
+  .footer {
+    grid-column: 1 / -1;
+  }
+
+  .footer__inner {
+    @include gridContainer();
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

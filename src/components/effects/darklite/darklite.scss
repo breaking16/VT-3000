@@ -1,0 +1,16 @@
+// src/components/effects/darklite/darklite.scss
+// ⬆️ весь файл
+
+.darklite-overlay {
+  position: fixed;
+  inset: 0;
+  background: black;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9998;
+  transition: opacity 0.3s ease;
+}
+
+.darklite-overlay.is-active {
+  opacity: 0.15;
+}

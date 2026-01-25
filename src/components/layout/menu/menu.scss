@@ -1,0 +1,83 @@
+// src\components\layout\menu\menu.scss
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+
+
+}
+
+.menu.is-open {
+  pointer-events: auto;
+}
+
+.menu .is-active,
+.header__nav .is-active {
+  text-decoration: underline;
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+// .is-active {
+//   text-decoration: underline;
+//   cursor: default;
+//   pointer-events: none;
+//   opacity: 0.9;
+// }
+
+/* panel */
+.menu__panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 70vw;
+  max-width: 360px;
+  height: 100%;
+  background: #111;
+  color: #fff;
+  transform: translateX(-100%);
+  transition: transform .35s ease;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu.is-open .menu__panel {
+  transform: translateX(0);
+}
+
+.menu__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu__list {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+  z-index: 900;
+}
+
+.overlay.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+html.body-locked,
+body.body-locked {
+  overflow: hidden;
+}

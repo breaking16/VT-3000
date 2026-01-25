@@ -1,0 +1,42 @@
+// src/components/layout/showmore/showmore.scss
+
+.showmore {
+  border: 1px dashed #ccc;
+  padding: 12px;
+  border-radius: 10px;
+  margin: 16px 0;
+
+  &__content {
+    overflow: hidden;
+    height: auto;
+    transition: height 0.35s ease;
+  }
+
+  &__btn {
+    margin-top: 10px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #f7f7f7;
+    font-size: 14px;
+
+    &:hover {
+      background: #eee;
+    }
+  }
+
+  .showmore__less {
+    display: none;
+  }
+
+  &._showmore-active {
+    .showmore__more {
+      display: none;
+    }
+
+    .showmore__less {
+      display: inline;
+    }
+  }
+}

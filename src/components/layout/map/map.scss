@@ -1,0 +1,11 @@
+[data-ww-map] {
+  display: block;
+  position: relative;
+
+  .map__canvas {
+    width: 100%;
+    height: 420px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+}

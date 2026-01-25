@@ -1,0 +1,40 @@
+/* =====================
+   Hover helpers
+===================== */
+
+@media (any-hover: hover) {
+  [data-hover-scale] {
+    transition: transform 0.25s ease;
+
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+
+  [data-hover-opacity] {
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  [data-hover-underline] {
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 1px;
+      background: currentColor;
+      transition: width 0.25s ease;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,24 @@
+<section class="dev-block">
+  <h2>gridContainer()</h2>
+
+  <p>
+    Основний layout-патерн шаблону.<br>
+    Фон — на всю ширину, контент — у контейнері.
+  </p>
+
+  <div class="demo-box">
+    <div class="demo-box__inner">
+      gridContainer content
+    </div>
+  </div>
+
+  <pre><code>
+.demo-box {
+  grid-column: 1 / -1;
+}
+
+.demo-box__inner {
+  @include gridContainer();
+}
+  </code></pre>
+</section>

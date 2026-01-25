@@ -1,0 +1,33 @@
+<section class="dev-block">
+  <h2>Header</h2>
+
+  <header class="header">
+    <div class="header__inner">
+      <strong>LOGO</strong>
+      <nav class="header__nav">
+        <a href="#">Home</a>
+        <a href="#">Contacts</a>
+      </nav>
+    </div>
+  </header>
+
+  <pre><code>
+&lt;header class="header"&gt;
+  &lt;div class="header__inner"&gt;
+    ...
+  &lt;/div&gt;
+&lt;/header&gt;
+  </code></pre>
+</section>
+
+<style>
+  .header {
+    grid-column: 1 / -1;
+  }
+
+  .header__inner {
+    @include gridContainer();
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

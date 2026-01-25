@@ -1,0 +1,29 @@
+/* src/components/layout/masonry/masonry.scss */
+
+.masonry {
+  display: grid;
+  gap: 20px;
+}
+
+/* Shared card style */
+.masonry__item {
+  padding: 16px;
+  border-radius: 12px;
+  background: #f2f2ff;
+  border: 2px dashed #7e74f1;
+}
+
+/* ============================
+   GRID MODE (lite, no deps)
+============================ */
+.masonry[data-mode="grid"] {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-auto-flow: dense;
+}
+
+/* ============================
+   ISOTOPE MODE (fallback layout)
+============================ */
+.masonry[data-mode="isotope"] {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}

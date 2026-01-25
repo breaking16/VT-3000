@@ -1,0 +1,16 @@
+<!-- src/components/custom/test/test.html -->
+<div class="test">
+
+  {{#if image}}
+  <figure class="test__image">
+    <img src="{{ image }}" alt="{{ title }}">
+  </figure>
+  {{/if}}
+
+  <h3 class="test__title">{{ title }}</h3>
+
+  <div class="test__content">
+    {{ text }}
+  </div>
+
+</div>

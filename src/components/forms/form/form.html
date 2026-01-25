@@ -1,0 +1,69 @@
+<form class="form" data-ww-form action="#" method="post" novalidate>
+  <div class="form__field">
+    <label class="form__label" for="name">
+      Name
+    </label>
+
+    <input class="form__input" type="text" id="name" name="name" required />
+  </div>
+
+  <div class="form__field">
+    <label class="form__label" for="email">
+      Email
+    </label>
+
+    <input class="form__input" type="email" id="email" name="email" required />
+  </div>
+
+  <button class="form__submit btn" type="submit">
+    Send
+  </button>
+</form>
+
+<!-- ←←← HTML — дрібний апгрейд (мінімум) →→→ -->
+<div class="form__field">
+  <label class="form__label" for="email">Email</label>
+
+  <input class="form__input" type="email" id="email" name="email" required data-ww-validate="email" />
+
+  <span class="form__error" aria-live="polite"></span>
+</div>
+
+<!-- ←←← еталонна тестова форма для перевірки ВСЬОГО core: →→→ -->
+<form class="form" data-ww-form novalidate>
+  <div class="form__field">
+    <label class="form__label" for="name">Name</label>
+    <input class="form__input" type="text" id="name" name="name" required data-ww-input data-ww-validate="required" />
+    <span class="form__error" aria-live="polite"></span>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label" for="email">Email</label>
+    <input class="form__input" type="email" id="email" name="email" required data-ww-input
+      data-ww-validate="required|email" />
+    <span class="form__error" aria-live="polite"></span>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label" for="company">Company</label>
+    <input class="form__input" type="text" id="company" name="company" data-ww-input />
+    <span class="form__error" aria-live="polite"></span>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label" for="phone">Phone</label>
+    <input class="form__input" type="tel" id="phone" name="phone" data-ww-input data-ww-validate="required" />
+    <span class="form__error" aria-live="polite"></span>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label" for="message">Message</label>
+    <input class="form__input" type="text" id="message" name="message" required data-ww-input
+      data-ww-validate="required" />
+    <span class="form__error" aria-live="polite"></span>
+  </div>
+
+  <button class="form__submit btn" type="submit">
+    Send
+  </button>
+</form>

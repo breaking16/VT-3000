@@ -1,0 +1,24 @@
+/* src/styles/settings.scss */
+
+/* Utility icon placeholder */
+.icon {
+   display: inline-block;
+   width: 1em;
+   height: 1em;
+   fill: currentColor;
+}
+
+/* Reset helpers (REQUIRED by forms) */
+.btn-reset {
+   padding: 0;
+   border: none;
+   background: transparent;
+   cursor: pointer;
+}
+
+.input-reset {
+   appearance: none;
+   border: none;
+   background: transparent;
+   border-radius: 0;
+}

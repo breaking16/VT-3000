@@ -1,0 +1,21 @@
+/* src/styles/style.scss */
+
+/* Core */
+@use "./vars";
+
+/* Mixins API */
+@use "./mixins/index" as *;
+
+/* Base */
+@use "./base/null";
+@use "./base/layout";
+@use "./base/themes";
+@use "./base/colors";
+@use "./base/effects";
+@use "./base/utilities";
+
+/* Project settings */
+@use "./settings";
+
+/* Dev only */
+@use "./dev";

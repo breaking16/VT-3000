@@ -1,0 +1,40 @@
+// src\styles\mixins\_layout.scss
+// Adaptive grid cards
+// gridCards(fit, 280px, 1fr, 24px)
+
+@mixin gridCards($type: fit, $min: 280px, $max: 1fr, $gap: 24px) {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: repeat(auto-#{$type}, minmax($min, $max));
+}
+
+
+// Triangle helper — good for tooltips, dropdowns etc.
+@mixin triangle($direction, $color, $size, $size2: $size) {
+  width: 0;
+  height: 0;
+
+  @if $direction ==left {
+    border-top: $size2 solid transparent;
+    border-bottom: $size2 solid transparent;
+    border-right: $size solid $color;
+  }
+
+  @if $direction ==right {
+    border-top: $size2 solid transparent;
+    border-bottom: $size2 solid transparent;
+    border-left: $size solid $color;
+  }
+
+  @if $direction ==top {
+    border-left: $size2 solid transparent;
+    border-right: $size2 solid transparent;
+    border-bottom: $size solid $color;
+  }
+
+  @if $direction ==bottom {
+    border-left: $size2 solid transparent;
+    border-right: $size2 solid transparent;
+    border-top: $size solid $color;
+  }
+}

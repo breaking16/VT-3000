@@ -1,0 +1,27 @@
+<!-- src\work-home.html -->
+<layout src="@components/templates/main/main.html" locals='{
+  "title": "Work Home",
+  "lang": "en",
+  "active": "work-home"
+
+
+}'>
+
+  <block name="header">
+    <include src="@components/layout/header/header.html" locals='{
+      "active": "work-home",
+      "home": "true"
+    }'>
+    </include>
+  </block>
+
+
+  <block name="main">
+    <include src="@components/pages/work-home/work-home.html" locals='{}'></include>
+  </block>
+
+  <block name="footer">
+    <include src="@components/layout/footer/footer.html" locals='{}'></include>
+  </block>
+
+</layout>

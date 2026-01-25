@@ -1,0 +1,47 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 12px 20px;
+  border-radius: 6px;
+  font: inherit;
+
+  background: var(--color-primary);
+  color: #fff;
+
+  transition:
+    background-color .2s,
+    transform .15s,
+    opacity .2s;
+
+  &-popup {
+    color: var(--color-primary-active);
+  }
+
+  &-form {
+    color: var(--color-danger);
+  }
+
+  @media (any-hover: hover) {
+    &:hover {
+      background: var(--color-accent);
+    }
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled,
+  &.is-disabled {
+    opacity: .5;
+    pointer-events: none;
+  }
+
+  &.is-loading {
+    pointer-events: none;
+    opacity: .7;
+  }
+}

@@ -1,0 +1,79 @@
+<!-- src/components/dev/showmore-preview.html -->
+<section class="dev-block">
+  <h2>Showmore (VT-3000)</h2>
+
+  <!-- BASIC — mode:size -->
+  <div class="showmore" data-ww-showmore="size" data-ww-showmore-content="160" data-ww-showmore>
+    <div class="showmore__content" data-ww-showmore-content>
+      Довгий текст… Довгий текст… Довгий текст… Довгий текст… Довгий текст…
+      Довгий текст… Довгий текст… Довгий текст… Довгий текст… Довгий текст…
+    </div>
+
+    <button class="showmore__btn" data-ww-showmore-btn>
+      <span class="showmore__more">Показати більше</span>
+      <span class="showmore__less">Згорнути</span>
+    </button>
+  </div>
+
+  <pre><code>
+&lt;div data-ww-showmore="size" data-ww-showmore-content="160" data-ww-showmore&gt;
+  &lt;div data-ww-showmore-content&gt;...&lt;/div&gt;
+  &lt;button data-ww-showmore-btn&gt;...&lt;/button&gt;
+&lt;/div&gt;
+  </code></pre>
+
+
+  <h3>Mode: items (показати N елементів)</h3>
+
+  <div class="showmore" data-ww-showmore="items" data-ww-showmore-content="3" data-ww-showmore>
+    <ul class="showmore__content" data-ww-showmore-content>
+      <li>Елемент 1</li>
+      <li>Елемент 2</li>
+      <li>Елемент 3</li>
+      <li>Елемент 4</li>
+      <li>Елемент 5</li>
+    </ul>
+
+    <button class="showmore__btn" data-ww-showmore-btn>
+      <span class="showmore__more">Показати більше</span>
+      <span class="showmore__less">Згорнути</span>
+    </button>
+  </div>
+
+  <pre><code>
+&lt;div data-ww-showmore="items" data-ww-showmore-content="3" data-ww-showmore&gt;
+  &lt;ul data-ww-showmore-content&gt;...&lt;/ul&gt;
+  &lt;button data-ww-showmore-btn&gt;...&lt;/button&gt;
+&lt;/div&gt;
+  </code></pre>
+</section>
+
+<style>
+  .showmore {
+    border: 1px dashed #ccc;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+
+    &__content {
+      overflow: hidden;
+    }
+
+    &__btn {
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    &__less {
+      display: none;
+    }
+
+    &.is-active .showmore__more {
+      display: none;
+    }
+
+    &.is-active .showmore__less {
+      display: inline;
+    }
+  }
+</style>

@@ -1,0 +1,43 @@
+<section class="dev-icons">
+  <h2>SVG Icons</h2>
+
+  <div class="dev-icons__grid" data-dev-icons></div>
+</section>
+
+<style>
+  .dev-icons {
+    margin-top: 32px;
+  }
+
+  .dev-icons__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+  }
+
+  .dev-icons__item {
+    background: #2a2a3d;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .dev-icons__item:hover {
+    background: #3a3a5a;
+  }
+
+  .dev-icons__item svg {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 8px;
+    fill: currentColor;
+    color: #7e74f1;
+  }
+
+  .dev-icons__name {
+    word-break: break-all;
+    opacity: 0.85;
+  }
+</style>

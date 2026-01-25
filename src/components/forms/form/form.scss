@@ -1,0 +1,84 @@
+/* src\components\forms\form\form.scss */
+.form {
+  display: grid;
+  gap: 16px;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+
+    /* focus from input.js */
+    &.is-focus {
+      .form__label {
+        color: #7e74f1;
+      }
+    }
+
+    /* filled state */
+    &.is-filled {
+      .form__label {
+        font-weight: 500;
+      }
+    }
+
+    /* error */
+    &.is-error {
+      .form__label {
+        color: #e53935;
+      }
+
+      .form__input {
+        border-color: #e53935;
+      }
+    }
+
+    /* success */
+    &.is-success {
+      .form__input {
+        border-color: #4caf50;
+      }
+    }
+  }
+
+  &__label {
+    font-size: 14px;
+    color: #444;
+    transition: color 0.2s ease;
+  }
+
+  &__input {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #7e74f1;
+      box-shadow: 0 0 0 2px rgba(126, 116, 241, 0.15);
+    }
+
+    &[aria-invalid="true"] {
+      border-color: #e53935;
+    }
+  }
+
+  &__error {
+    font-size: 12px;
+    color: #e53935;
+    min-height: 1em;
+  }
+
+  &__submit {
+    align-self: flex-start;
+  }
+
+  /* form submit success (whole form) */
+  &.is-success {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+}

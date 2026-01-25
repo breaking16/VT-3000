@@ -1,0 +1,28 @@
+/* src/components/custom/test/test.scss */
+[data-wwc-test] {
+  .test {
+    padding: 16px;
+    border: 2px dashed #7e74f1;
+    border-radius: 12px;
+    background: #fafaff;
+  }
+
+  .test__image {
+    margin-bottom: 12px;
+
+    img {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+    }
+  }
+
+  .test__title {
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .test__content {
+    opacity: .85;
+  }
+}

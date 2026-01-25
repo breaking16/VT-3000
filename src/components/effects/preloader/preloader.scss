@@ -1,0 +1,15 @@
+// src/components/effects/preloader/preloader.scss
+// ⬆️ весь файл
+
+[data-preloader] {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+}
+
+[data-preloader].is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}

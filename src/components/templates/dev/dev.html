@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uk" class="is-dev">
+
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEV • VT-3000</title>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #1e1e2f;
+      color: #fff;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #7e74f1;
+      margin-bottom: 20px;
+    }
+
+    a {
+      color: #9aa4ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul {
+      margin-left: 20px;
+    }
+  </style>
+  <!-- <style>
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    h1 {
+      color: var(--color-accent);
+    }
+
+    a {
+      color: var(--color-primary);
+    }
+  </style> -->
+
+</head>
+
+<body>
+  <slot name="content"></slot>
+
+  <!-- DEV ROOT SCRIPTS -->
+  <script type="module" src="/components/pages/dev-root/dev-root.js"></script>
+</body>
+
+
+</html>

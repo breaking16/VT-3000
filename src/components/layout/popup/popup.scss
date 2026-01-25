@@ -1,0 +1,54 @@
+/* =====================
+   Popup
+===================== */
+
+.popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  &__content {
+    position: relative;
+    z-index: 2;
+
+    background: var(--bg-primary, #fff);
+    color: var(--text-primary, #000);
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 480px;
+    width: 100%;
+
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  &__close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+}

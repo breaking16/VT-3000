@@ -1,0 +1,132 @@
+<section class="dev-da">
+  <h2>Dynamic Adapt playground</h2>
+  <p style="opacity:.8">Зменшуй вікно <b>&lt;= 768px</b> — блоки переїдуть у TARGET.</p>
+
+  <div class="dev-da__grid">
+    <!-- EXAMPLE 1 -->
+    <div class="dev-da__card">
+      <div class="dev-da__head">
+        <code>data-da=".dev-da__t1, 768, first"</code>
+      </div>
+
+      <div class="dev-da__row">
+        <div class="dev-da__src">
+          <div class="dev-da__box" data-da=".dev-da__t1, 768, first">
+            BOX #1 (move to T1)
+          </div>
+        </div>
+
+        <div class="dev-da__dst dev-da__t1">
+          TARGET T1
+        </div>
+      </div>
+    </div>
+
+    <!-- EXAMPLE 2 -->
+    <div class="dev-da__card">
+      <div class="dev-da__head">
+        <code>data-da=".dev-da__t2, 768, last"</code>
+      </div>
+
+      <div class="dev-da__row">
+        <div class="dev-da__src">
+          <div class="dev-da__box dev-da__box--2" data-da=".dev-da__t2, 768, last">
+            BOX #2 (move to T2)
+          </div>
+        </div>
+
+        <div class="dev-da__dst dev-da__t2">
+          TARGET T2
+        </div>
+      </div>
+    </div>
+
+    <!-- EXAMPLE 3 (index place) -->
+    <div class="dev-da__card">
+      <div class="dev-da__head">
+        <code>data-da=".dev-da__t3, 768, 1"</code>
+      </div>
+
+      <div class="dev-da__row">
+        <div class="dev-da__src">
+          <div class="dev-da__box dev-da__box--3" data-da=".dev-da__t3, 768, 1">
+            BOX #3 (move to T3 at index 1)
+          </div>
+        </div>
+
+        <div class="dev-da__dst dev-da__t3">
+          <div class="dev-da__slot">slot 0</div>
+          <div class="dev-da__slot">slot 1</div>
+          <div class="dev-da__slot">slot 2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .dev-da {
+    margin-top: 32px;
+  }
+
+  .dev-da__grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .dev-da__card {
+    background: #2a2a3d;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .dev-da__head {
+    margin-bottom: 12px;
+    opacity: .9;
+  }
+
+  .dev-da__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .dev-da__src,
+  .dev-da__dst {
+    background: #1e1e2f;
+    border-radius: 10px;
+    padding: 12px;
+    min-height: 74px;
+  }
+
+  .dev-da__dst {
+    border: 1px dashed rgba(126, 116, 241, .45);
+  }
+
+  .dev-da__box {
+    display: inline-block;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #7e74f1;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .dev-da__box--2 {
+    background: #9aa4ff;
+  }
+
+  .dev-da__box--3 {
+    background: #5fd3ff;
+    color: #101018;
+  }
+
+  .dev-da__slot {
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #2a2a3d;
+    margin-bottom: 8px;
+    opacity: .85;
+  }
+</style>

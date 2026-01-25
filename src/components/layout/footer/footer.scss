@@ -1,0 +1,44 @@
+.footer {
+  background: #0f0f14;
+  color: #fff;
+}
+
+.footer__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 20px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer__left {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.footer__brand {
+  font-weight: 600;
+}
+
+.footer__year {
+  opacity: 0.6;
+}
+
+.footer__nav {
+  display: flex;
+  gap: 16px;
+
+  a {
+    color: inherit;
+    opacity: 0.8;
+    text-decoration: none;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

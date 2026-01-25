@@ -1,0 +1,46 @@
+<!-- src\components\templates\inner\inner.html -->
+<!doctype html>
+<html lang="[[lang]]">
+
+<include src="@components/layout/head/head.html"></include>
+
+<body>
+  <div class="wrapper wrapper--inner">
+
+    <header class="header">
+      <slot name="header"></slot>
+    </header>
+
+    <div class="layout">
+
+      <aside class="aside">
+        <slot name="aside">
+          <p>Default aside</p>
+        </slot>
+      </aside>
+
+      <main class="page">
+        <slot name="main"></slot>
+      </main>
+
+    </div>
+
+    <footer class="footer">
+      <slot name="footer"></slot>
+    </footer>
+
+  </div>
+  <!-- DEV TOGGLE (GLOBAL) -->
+  <div class="dev-toggle" data-dev-only>
+    <button class="dev-toggle__btn" type="button" aria-label="DEV menu" onclick="location.href='/dev-root.html'">
+      ⚙ DEV
+    </button>
+  </div>
+
+  <!-- SVG SPRITE -->
+  <include src="@components/layout/svg-sprite/sprite.html"></include>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+
+</html>

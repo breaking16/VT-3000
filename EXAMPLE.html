@@ -1,0 +1,106 @@
+1) скрипт твій ніби працює і створює основну сторінку:
+<!-- src\work-home.html -->
+<layout src="@components/templates/main/main.html" locals='{
+  "title": "Work Home",
+  "lang": "en",
+  "active": "work-home"
+
+
+}'>
+
+  <block name="header">
+    <include src="@components/layout/header/header.html" locals='{
+      "active": "work-home",
+      "home": "true"
+    }'>
+    </include>
+  </block>
+
+
+  <block name="main">
+    <include src="@components/pages/work-home/work-home.html" locals='{}'></include>
+  </block>
+
+  <block name="footer">
+    <include src="@components/layout/footer/footer.html" locals='{}'></include>
+  </block>
+
+</layout> але хіба тут в блоці header не має бути "home": "false" ? ми ж не на головній ! "home": "true" в нас тільки на
+index.html !
+2) службова сторінка в мене вже є і ось код
+<!-- src\dev-root.html -->
+<layout src="@components/templates/dev/dev.html">
+
+  <block name="content">
+    <h1>VT-3000 • DEV ROOT</h1>
+
+    <p>Службова сторінка для навігації та перевірки.</p>
+
+    <include src="@components/dev/pages-list.html"></include>
+
+    <include src="@components/dev/icons-preview.html"></include>
+
+    <h2>Компоненти</h2>
+    <ul>
+      <li>Tabs</li>
+      <li>Spollers</li>
+      <li>Popup</li>
+      <li>Menu</li>
+    </ul>
+
+    <include src="@components/dev/da-preview.html"></include>
+    <include src="@components/dev/fullpage-preview.html"></include>
+    <include src="@components/dev/gallery-preview.html"></include>
+    <include src="@components/dev/mansory-preview.html"></include>
+    <include src="@components/dev/swiper-preview.html"></include>
+    <include src="@components/dev/showmore-preview.html"></include>
+    <include src="@components/dev/pagging-preview.html"></include>
+    <include src="@components/dev/layout-grid-preview.html"></include>
+    <include src="@components/dev/header-preview.html"></include>
+    <include src="@components/dev/footer-preview.html"></include>
+    <include src="@components/dev/section-preview.html"></include>
+    <include src="@components/dev/grid-container-preview.html"></include>
+    <include src="@components/dev/layout-core.html"></include>
+    <include src="@components/dev/colors-preview.html"></include>
+    <include src="@components/dev/select-preview.html"></include>
+    <include src="@components/dev/theme-preview.html"></include>
+    <include src="@components/dev/rating-preview.html"></include>
+    <include src="@components/dev/range-preview.html"></include>
+    <include src="@components/dev/radio-preview.html"></include>
+    <include src="@components/dev/checkbox-preview.html"></include>
+    <include src="@components/dev/quantity-preview.html"></include>
+    <include src="@components/dev/ripple-preview.html"></include>
+    <include src="@components/dev/skeleton-preview.html"></include>
+    <include src="@components/dev/loader-preview.html"></include>
+    <include src="@components/dev/hover-preview.html"></include>
+    <include src="@components/dev/focus-preview.html"></include>
+    <include src="@components/dev/button-preview.html"></include>
+    <include src="@components/dev/spollers-preview.html"></include>
+    <include src="@components/dev/tabs-preview.html"></include>
+    <!-- базовий приклад -->
+    <include src="@components/layout/showmore/showmore.html"></include>
+    <include src="@components/dev/ripple-preview.html"></include>
+    <include src="@components/dev/scrollto-pro.html"></include>
+    <include src="@components/dev/watcher-pro.html"></include>
+
+
+  </block>
+
+</layout>
+
+і ще сторінка що включена(через неї можна переходити по сторінкам)
+<!-- src\components\dev\pages-list.html -->
+<h2>Сторінки</h2>
+<ul>
+  <li><a href="/contacts.html" target="_blank">contacts.html</a></li>
+  <li><a href="/work.html" target="_blank">work.html</a></li>
+  <li><a href="/dev-root.html" target="_blank">dev-root.html</a></li>
+  <li><a href="/index.html" target="_blank">index.html</a></li>
+</ul>
+
+3)ти написала:"1️⃣ трошки відполірувати npm run stat
+2️⃣ підʼєднати його в DEV-dashboard" -- але ти не кидала мені скрипт який при команді термінала npm run stat буде
+виводити мені таблицю на подобі тої що ти бачила на скріні(шаблон фрілансера)! І навіщо додавати цей скрипт в робочу
+сторінку? Я хочу ввести команду в терміналі npm run stat і побачити результат
+! Якщо можеш то додай якісь свої фішки до цього скрипта!
+Висновок на зараз-переробляємо якщо треба create-page.js(home:true/false) і ти пишеш функціонал для статистики!!

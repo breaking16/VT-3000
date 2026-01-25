@@ -1,0 +1,93 @@
+/* src/components/layout/tabs/tabs.scss */
+
+/* ============================
+   HEADER (рядок вкладок)
+============================ */
+.tabs__header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+/* Кнопки вкладок (JS навішує data-ww-tabs-title, якщо його немає) */
+[data-ww-tabs-title] {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background: #eee;
+  }
+}
+
+/* Активна вкладка */
+[data-ww-tabs-title].is-active {
+  background: #7e74f1;
+  border-color: #7e74f1;
+  color: #fff;
+}
+
+/* ============================
+   ПАНЕЛІ ВКЛАДОК + АНІМАЦІЯ
+============================ */
+
+/* Базовий стан панелей: сховані, але з анімацією */
+[data-ww-tabs-panel] {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Активна панель — показуємо, вмикаємо інтерактивність */
+[data-ww-tabs-panel].is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Якщо старі стилі використовують .tabs__panel — підтримуємо їх */
+.tabs__panel {
+
+  /* просто прокидуємо на новий API */
+  &[data-ww-tabs-panel] {
+    // вже стилиться вище
+  }
+}
+
+/* ============================
+   OPTIONAL: MOBILE "SPOILER MODE"
+   (поки що для демо / майбутнього)
+============================ */
+
+/*
+  .tabs._tabs-spoller:
+  - шапка з кнопками ховається
+  - заголовки можна рендерити поряд із контентом (у майбутньому)
+*/
+.tabs._tabs-spoller {
+  .tabs__header {
+    display: none;
+  }
+
+  /* заголовки в "спойлер-режимі" */
+  [data-ww-tabs-title] {
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #f5f5f7;
+    margin-bottom: 6px;
+  }
+
+  [data-ww-tabs-panel] {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #fafafa;
+    margin-bottom: 10px;
+  }
+}

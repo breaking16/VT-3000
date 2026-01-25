@@ -1,0 +1,113 @@
+// src\components\effects\marquee\marquee.scss
+[data-ww-marquee] {
+  overflow: hidden;
+  position: relative;
+  display: block;
+
+  .marquee__inner {
+    display: flex;
+    width: max-content;
+    gap: var(--gap, 32px);
+    will-change: transform;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  .marquee__item {
+    white-space: nowrap;
+  }
+}
+
+[data-ww-marquee].is-paused .marquee__inner {
+  animation-play-state: paused;
+}
+
+/* =====================
+   HORIZONTAL — LEFT
+===================== */
+/* LEFT тільки якщо явно вказано */
+[data-ww-marquee][data-direction="left"] {
+  .marquee__inner {
+    animation-name: marquee-x-left;
+  }
+}
+
+@keyframes marquee-x-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* =====================
+   HORIZONTAL — RIGHT
+===================== */
+[data-ww-marquee][data-direction="right"] {
+  .marquee__inner {
+    animation-name: marquee-x-right;
+  }
+}
+
+@keyframes marquee-x-right {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* =====================
+   VERTICAL — UP
+===================== */
+[data-ww-marquee][data-direction="up"] {
+  .marquee__inner {
+    flex-direction: column;
+    animation-name: marquee-y-up;
+  }
+}
+
+@keyframes marquee-y-up {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* =====================
+   VERTICAL — DOWN
+===================== */
+[data-ww-marquee][data-direction="down"] {
+  .marquee__inner {
+    flex-direction: column;
+    animation-name: marquee-y-down;
+  }
+}
+
+@keyframes marquee-y-down {
+  from {
+    transform: translateY(-50%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+[data-ww-marquee].is-paused .marquee__inner {
+  animation-play-state: paused;
+}
+
+/* spacing for vertical mode */
+[data-ww-marquee][data-direction="up"] .marquee__item,
+[data-ww-marquee][data-direction="down"] .marquee__item {
+  padding-right: 0;
+  padding-bottom: 48px;
+}

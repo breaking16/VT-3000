@@ -1,0 +1,28 @@
+<section class="dev-block">
+  <h2>Section pattern</h2>
+
+  <section class="section">
+    <div class="section__inner">
+      <h3>Section title</h3>
+      <p>Content here</p>
+    </div>
+  </section>
+
+  <pre><code>
+&lt;section class="section"&gt;
+  &lt;div class="section__inner"&gt;
+    ...
+  &lt;/div&gt;
+&lt;/section&gt;
+  </code></pre>
+</section>
+
+<style>
+  .section {
+    grid-column: 1 / -1;
+  }
+
+  .section__inner {
+    @include gridContainer();
+  }
+</style>

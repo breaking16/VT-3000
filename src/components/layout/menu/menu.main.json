@@ -1,0 +1,29 @@
+[
+  {
+    "id": "home",
+    "label": "Home",
+    "href": "index.html"
+  },
+  {
+    "id": "work",
+    "label": "Work",
+    "href": "work.html",
+    "children": [
+      {
+        "id": "cases",
+        "label": "Cases",
+        "href": "work-cases.html"
+      },
+      {
+        "id": "team",
+        "label": "Team",
+        "href": "work-team.html"
+      }
+    ]
+  },
+  {
+    "id": "contacts",
+    "label": "Contacts",
+    "href": "contacts.html"
+  }
+]

@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/clean-svg.js && node scripts/build-svg-sprite.js && node scripts/build-fonts.js && node scripts/build-preload.js && node scripts/build-favicons.js && vite",
+    "predev": "node scripts/clean-svg.js && node scripts/build-svg-sprite.js && node scripts/build-fonts.js && node scripts/build-preload.js && node scripts/build-favicons.js",
+    "dev": "concurrently \"node scripts/activity-watcher.js\" \"vite\"",
     "build": "node scripts/clean-svg.js && node scripts/build-svg-sprite.js && node scripts/build-fonts.js && node scripts/build-preload.js && node scripts/build-favicons.js && vite build",
     "preview": "vite preview",
     "images": "node scripts/build-images.js",
@@ -13,6 +14,8 @@
     "stat": "node scripts/stat.js"
   },
   "devDependencies": {
+    "chokidar": "^5.0.0",
+    "concurrently": "^9.2.1",
     "favicons": "^7.2.0",
     "posthtml": "^0.16.7",
     "posthtml-parser": "^0.12.1",

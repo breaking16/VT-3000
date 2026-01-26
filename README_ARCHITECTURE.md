@@ -252,6 +252,34 @@ src/js/services/
 // src/js/app.js
 import.meta.glob("../components/**/**/\*.scss", { eager: true });
 
+🌲 Navigation / Menu Architecture
+
+Меню у VT-3000 — data-driven.
+
+HTML:
+
+- не містить логіки
+- не містить структури меню
+
+JSON:
+
+- описує дерево навігації
+- підтримує необмежену вкладеність
+
+JS:
+
+- рендерить recursive menu
+- визначає active path
+- будує breadcrumbs / mobile / desktop
+
+components/layout/menu/
+├─ menu.html
+├─ menu.js
+├─ menu.scss
+├─ menu.main.json
+├─ menu.shop.json
+└─ menu.docs.json
+
 style.scss містить ТІЛЬКИ:
 
 variables

@@ -1,0 +1,28 @@
+[
+  {
+    "id": "shop",
+    "label": "Shop",
+    "href": "shop.html",
+    "children": [
+      {
+        "id": "men",
+        "label": "Men",
+        "href": "shop-men.html",
+        "children": [
+          { "id": "shoes", "label": "Shoes", "href": "shop-men-shoes.html" },
+          { "id": "jackets", "label": "Jackets", "href": "shop-men-jackets.html" }
+        ]
+      },
+      {
+        "id": "women",
+        "label": "Women",
+        "href": "shop-women.html"
+      }
+    ]
+  },
+  {
+    "id": "sale",
+    "label": "Sale",
+    "href": "sale.html"
+  }
+]

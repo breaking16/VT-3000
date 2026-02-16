@@ -9,16 +9,53 @@
     </div>
 
     <ul class="menu__list">
-      <each src="@components/layout/menu/menu.json" loop="item">
-        <if condition="'[[active]]' === '[[item.id]]'">
-          <span class="is-active">[[item.label]]</span>
 
-          <else>
-            <a href="[[item.href]]">[[item.label]]</a>
-          </else>
-        </if>
-      </each>
+      <!-- Home -->
+      <li>
+        <a href="/index.html">Home</a>
+      </li>
+
+      <!-- Work -->
+      <li class="has-submenu">
+        <a class="menu__link" href="/work.html">Work</a>
+        <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
+
+        <ul class="menu__sublist">
+          <li>
+            <a href="/work-team.html">Team</a>
+          </li>
+
+          <li class="has-submenu">
+            <a href="/work-cases.html">Cases</a>
+            <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
+
+            <ul class="menu__sublist">
+              <li>
+                <a href="/work-cases.html">All cases</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Contacts -->
+      <li class="has-submenu">
+        <a class="menu__link" href="/contacts.html">Contacts</a>
+        <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
+
+        <ul class="menu__sublist">
+          <li>
+            <a href="/contacts-support.html">Support</a>
+          </li>
+          <li>
+            <a href="/contacts-map.html">Map</a>
+          </li>
+        </ul>
+      </li>
+
     </ul>
+
+
 
   </div>
 </div>

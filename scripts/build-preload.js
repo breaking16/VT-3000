@@ -1,4 +1,4 @@
-// scripts/build-preload.js
+/* scripts\build-preload.js */
 import fs from "fs";
 import path from "path";
 
@@ -32,7 +32,7 @@ const preloadHTML = `<!-- ↓↓↓ Preload project fonts (auto-generated) ↓�
 ${[...fonts]
   .map(
     (href) =>
-      `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin>`
+      `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin>`,
   )
   .join("\n")}
 <!-- ↑↑↑ Preload project fonts ↑↑↑ -->`;

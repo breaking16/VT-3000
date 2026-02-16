@@ -1,4 +1,4 @@
-// Watcher-PRO — VT-3000 Core
+/* src\components\effects\watcher-pro\watcher-pro.js */
 // Нормальний, акуратний IntersectionObserver
 // Підтримує: threshold, root, margin, once + події
 
@@ -41,7 +41,7 @@ export function initWatcherPro(root = document) {
         root: cfg.root,
         rootMargin: cfg.margin,
         threshold: cfg.threshold,
-      }
+      },
     );
 
     observers.set(key, obs);
@@ -55,11 +55,11 @@ export function initWatcherPro(root = document) {
       el.classList.add("is-in-view");
 
       el.dispatchEvent(
-        new CustomEvent("ww:in-view", { detail: { entry, target: el } })
+        new CustomEvent("ww:in-view", { detail: { entry, target: el } }),
       );
 
       document.dispatchEvent(
-        new CustomEvent("ww:in-view", { detail: { entry, target: el } })
+        new CustomEvent("ww:in-view", { detail: { entry, target: el } }),
       );
 
       if (cfg.once) {
@@ -69,7 +69,7 @@ export function initWatcherPro(root = document) {
       el.classList.remove("is-in-view");
 
       document.dispatchEvent(
-        new CustomEvent("ww:out-view", { detail: { entry, target: el } })
+        new CustomEvent("ww:out-view", { detail: { entry, target: el } }),
       );
     }
   }

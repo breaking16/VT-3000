@@ -1,10 +1,12 @@
+/* scripts\layout-engine.js */
+
 import fs from "fs";
 import path from "path";
 
 export function applyLayout(html, rootDir) {
   // 1. знайти <template>
   const templateMatch = html.match(
-    /<template\s+src="([^"]+)"[^>]*>([\s\S]*?)<\/template>/
+    /<template\s+src="([^"]+)"[^>]*>([\s\S]*?)<\/template>/,
   );
 
   if (!templateMatch) return html;
@@ -29,7 +31,7 @@ export function applyLayout(html, rootDir) {
   Object.entries(blocks).forEach(([name, content]) => {
     const blockPlaceholder = new RegExp(
       `<block\\s+name="${name}"\\s*><\\/block>`,
-      "g"
+      "g",
     );
 
     layoutHtml = layoutHtml.replace(blockPlaceholder, content);

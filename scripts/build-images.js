@@ -1,4 +1,4 @@
-// scripts/build-images.js
+/* scripts\build-images.js */
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
@@ -86,7 +86,7 @@ function rewriteImagesInHTML(html) {
   <img src="/assets/img/${name}/${name}.webp" ${before} ${after} loading="lazy">
 </picture>
       `.trim();
-    }
+    },
   );
 }
 

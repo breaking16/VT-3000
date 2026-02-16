@@ -1,4 +1,4 @@
-// src/js/modulesLoader.js
+/* src\js\modulesLoader.js */
 import { log, mark, measure } from "./services/logger.js";
 
 console.log("INIT MODULES LOADER");
@@ -106,7 +106,7 @@ async function initCustomModules() {
         () => import(`@components/custom/${name}/${name}.js`),
         name,
         el,
-        "CUSTOM"
+        "CUSTOM",
       );
     }
   }
@@ -130,7 +130,7 @@ async function initLayoutModules() {
       () => import(`@components/layout/${name}/${name}.js`),
       name,
       el,
-      "LAYOUT"
+      "LAYOUT",
     );
   }
 

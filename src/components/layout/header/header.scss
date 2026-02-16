@@ -1,4 +1,5 @@
-// src\components\layout\header\header.scss
+/* src/components/layout/header/header.scss */
+
 .header {
   position: sticky;
   top: 0;
@@ -13,16 +14,11 @@
   }
 }
 
-
 .header__container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-}
-
-.header__spacer {
-  flex: 1 1 auto;
 }
 
 .header__logo {
@@ -31,28 +27,38 @@
   color: inherit;
 }
 
-
-
 .header__nav {
   display: none;
 
-  ul {
+  .menu__list {
     display: flex;
-    gap: 20px;
+    gap: 24px;
     list-style: none;
   }
 
   a {
     color: #fff;
     text-decoration: none;
+    position: relative;
 
-    &.is-active {
-      text-decoration: underline;
+    /* підкреслення з анімацією */
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: #fff;
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after,
+    &.active::after {
+      width: 100%;
     }
   }
 }
-
-
 
 .theme-toggle {
   background: none;
@@ -62,18 +68,15 @@
   line-height: 1;
 }
 
-
 .menu-toggle {
   --w: 22px;
   --h: 2px;
-
   position: relative;
   width: var(--w);
   height: 18px;
   border: none;
   background: none;
   cursor: pointer;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -87,7 +90,7 @@
     height: var(--h);
     background: #fff;
     border-radius: 2px;
-    transition: transform .25s ease, opacity .25s ease;
+    transition: transform 0.25s ease, opacity 0.25s ease;
   }
 
   .menu-toggle__bar::before {
@@ -111,8 +114,11 @@
   }
 }
 
-/* DESKTOP ≥ 768px */
+/* =========================
+DESKTOP ≥ 768px
+========================= */
 @media (min-width: 768px) {
+
   .header__nav {
     display: block;
   }
@@ -120,15 +126,142 @@
   .menu-toggle {
     display: none;
   }
-}
 
-/* MOBILE < 768px */
-@media (max-width: 767px) {
-  .header__nav {
-    display: none;
+  .header__nav .menu__list {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    align-items: center;
   }
 
-  .menu-toggle {
+  /* top-level li з підменю */
+  .menu__list>li.has-submenu {
+    display: flex;
+    align-items: center; // центр по вертикалі
+    gap: 6px; // відстань між текстом і стрілкою
+    position: relative;
+  }
+
+  /* лінки */
+  .menu__link {
     display: inline-flex;
+    align-items: center; // текст по центру
+    padding: 8px 12px;
+    color: #fff;
+    text-decoration: none;
+    position: relative;
+    line-height: 1.2;
+
+    /* підкреслення */
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: #fff;
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after,
+    &.active::after {
+      width: 100%;
+    }
+  }
+
+  /* стрілки */
+  .menu__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    &::before {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(45deg);
+      transition: transform 0.3s ease;
+    }
+  }
+
+  .has-submenu.is-open>.menu__arrow::before {
+    transform: rotate(-135deg);
+  }
+
+  /* випадаючі меню */
+  .menu__sublist {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    padding: 8px 0;
+    background: #222;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 20;
+  }
+
+  /* 🔥 ключове */
+  .menu__sublist .has-submenu {
+    position: relative;
+  }
+
+  /* 2 рівень */
+  .menu__list>.has-submenu>.menu__sublist {
+    top: 100%;
+    left: 0;
+  }
+
+  /* 3 рівень */
+  .menu__sublist .menu__sublist {
+    top: 0;
+    left: 100%;
+  }
+
+  .has-submenu.is-open>.menu__sublist {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .menu__sublist a {
+    display: block;
+    padding: 8px 16px;
+    white-space: nowrap;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: #fff;
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after,
+    &.active::after {
+      width: 100%;
+    }
   }
 }

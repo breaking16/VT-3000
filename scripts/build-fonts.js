@@ -1,9 +1,9 @@
-// scripts/build-fonts.js
+/* scripts\build-fonts.js */
 import fs from "fs";
 import path from "path";
 import ttf2woff2 from "ttf2woff2";
 
-const FONTS_DIR = path.resolve("src/assets/fonts");
+const FONTS_DIR = path.resolve("src/assets/fonts"); // ✅ ПРАВИЛЬНО
 const OUT_SCSS = path.resolve("src/styles/_fonts.scss");
 
 if (!fs.existsSync(FONTS_DIR)) {
@@ -34,7 +34,6 @@ fontFiles.forEach((file) => {
 
   console.log(`🔤 ${file} → ${name}.woff2`);
 
-  // weight detection
   let weight = 400;
   if (/medium/i.test(name)) weight = 500;
   if (/semibold/i.test(name)) weight = 600;
@@ -45,7 +44,7 @@ fontFiles.forEach((file) => {
   scss += `
 @font-face {
   font-family: "${family}";
-  src: url("/src/assets/fonts/${name}.woff2") format("woff2");
+  src: url("/assets/fonts/${name}.woff2") format("woff2");
   font-weight: ${weight};
   font-style: normal;
   font-display: swap;

@@ -1,0 +1,29 @@
+<!-- ←←← src\work-team.html →→→ -->
+<layout src="@components/templates/main/main.html" locals='{
+  "title": "Work Team",
+  "lang": "en",
+  "active": "work-team"
+
+
+
+}'>
+
+
+  <block name="header">
+    <include src="@components/layout/header/header.html" locals='{
+      "active": "work-team",
+      "home": "false",
+    }'>
+    </include>
+  </block>
+
+
+  <block name="main">
+    <include src="@components/pages/work-team/work-team.html" locals='{}'></include>
+  </block>
+
+  <block name="footer">
+    <include src="@components/layout/footer/footer.html" locals='{}'></include>
+  </block>
+
+</layout>

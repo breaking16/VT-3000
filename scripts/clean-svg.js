@@ -1,3 +1,4 @@
+/* scripts\clean-svg.js */
 import fs from "fs";
 import path from "path";
 import { optimize } from "svgo";

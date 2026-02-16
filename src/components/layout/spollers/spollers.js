@@ -1,3 +1,6 @@
+/* src\components\layout\spollers\spollers.js */
+import "./spollers.scss";
+
 export function init() {
   const blocks = document.querySelectorAll("[data-ww-spollers]");
   if (!blocks.length) return;
@@ -135,7 +138,7 @@ function openSpoller(item, title, body, block) {
   body.hidden = false;
 
   block.dispatchEvent(
-    new CustomEvent("spoller:open", { detail: { item, title, body } })
+    new CustomEvent("spoller:open", { detail: { item, title, body } }),
   );
 }
 
@@ -148,7 +151,7 @@ function closeSpoller(item, title, body, block) {
   body.hidden = true;
 
   block.dispatchEvent(
-    new CustomEvent("spoller:close", { detail: { item, title, body } })
+    new CustomEvent("spoller:close", { detail: { item, title, body } }),
   );
 }
 

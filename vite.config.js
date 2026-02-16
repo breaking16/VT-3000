@@ -1,11 +1,27 @@
-// vite.config.js
+/* vite.config.js */
 import { defineConfig } from "vite";
-import path from "path";
+import path from "node:path";
+import fg from "fast-glob";
 import htmlIncludePlugin from "./scripts/html-include-plugin.js";
 
-export default defineConfig(({ command }) => {
-  const rootDir = path.resolve(__dirname, "src");
+const rootDir = path.resolve(__dirname, "src");
+
+// 🔥 беремо ТІЛЬКИ реальні сторінки (без dev-root.html)
+function htmlInputs() {
+  const files = fg.sync(["src/*.html", "!src/dev-root.html"]);
+  const input = {};
+
+  for (const file of files) {
+    const name = path.basename(file, ".html");
+    input[name] = path.resolve(__dirname, file);
+  }
+
+  return input;
+}
+
+export default defineConfig(({ command, mode }) => {
   const isDev = command === "serve";
+  const isProd = mode === "production";
 
   return {
     root: rootDir,
@@ -20,8 +36,20 @@ export default defineConfig(({ command }) => {
       },
     },
 
+    /* =====================
+    CSS / SOURCEMAPS
+    ===================== */
+    css: {
+      devSourcemap: isDev,
+      preprocessorOptions: {
+        scss: {
+          sourceMap: isDev,
+        },
+      },
+    },
+
     plugins: [
-      // 🔥 PostHTML engine (template, include, each, if, blocks, slots)
+      // 🔥 PostHTML engine (include / each / if / blocks)
       htmlIncludePlugin({
         root: rootDir,
         aliases: {
@@ -44,21 +72,43 @@ export default defineConfig(({ command }) => {
       },
     ],
 
+    /* =====================
+    BUILD (PRO)
+    ===================== */
     build: {
       outDir: path.resolve(__dirname, "dist"),
       emptyOutDir: true,
 
+      sourcemap: false, // ❌ sourcemaps у prod не потрібні
+
       rollupOptions: {
-        input: {
-          index: path.resolve(rootDir, "index.html"),
-          contacts: path.resolve(rootDir, "contacts.html"),
-          // dev-root.html — ❌ НІКОЛИ
+        input: htmlInputs(),
+
+        output: {
+          // 🔥 нормальна структура
+          entryFileNames: "assets/js/[name].[hash].js",
+          chunkFileNames: "assets/js/[name].[hash].js",
+          assetFileNames: ({ name }) => {
+            if (!name) return "assets/[name].[hash][extname]";
+            if (/\.(woff2?|ttf|otf)$/.test(name)) {
+              return "assets/fonts/[name][extname]";
+            }
+            if (/\.(png|jpe?g|svg|webp|gif|ico)$/.test(name)) {
+              return "assets/img/[name][extname]";
+            }
+            return "assets/[name].[hash][extname]";
+          },
         },
       },
     },
 
     server: {
       open: true,
+    },
+
+    define: {
+      __DEV__: isDev,
+      __PROD__: isProd,
     },
   };
 });

@@ -1,0 +1,30 @@
+<layout src="@components/templates/main/main.html" locals='{
+  "title": "Contacts Support",
+  "lang": "en",
+  "active": "contacts-support"
+
+
+
+}'>
+
+  <!-- 🔥 Page entry point -->
+  <script type="module" src="./entries/page.contacts-support.js"></script>
+
+  <block name="header">
+    <include src="@components/layout/header/header.html" locals='{
+      "active": "contacts-support",
+      "home": "false",
+    }'>
+    </include>
+  </block>
+
+
+  <block name="main">
+    <include src="@components/pages/contacts-support/contacts-support.html" locals='{}'></include>
+  </block>
+
+  <block name="footer">
+    <include src="@components/layout/footer/footer.html" locals='{}'></include>
+  </block>
+
+</layout>

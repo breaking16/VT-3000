@@ -1,4 +1,4 @@
-// scripts/posthtml-engine.js
+/* scripts\posthtml-engine.js */
 import fs from "fs";
 import path from "path";
 import { parser as parse } from "posthtml-parser";

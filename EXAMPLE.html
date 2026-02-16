@@ -1,0 +1,147 @@
+// ========================= GIT CHEATSHEET (EXTENDED) =========================
+// 🔍 Поточний статус репозиторію
+git status
+
+// 👤 ХТО Я ЗАРАЗ? (user.name / user.email)
+git config user.name
+git config user.email
+
+// 👤 ВСТАНОВИТИ USER ДЛЯ ПОТОЧНОГО ПРОЕКТУ
+git config user.name "Your Name"
+git config user.email "you@email.com"
+
+// 👤 ВСТАНОВИТИ USER ГЛОБАЛЬНО (ДЛЯ ВСІХ ПРОЕКТІВ)
+git config --global user.name "Your Name"
+git config --global user.email "you@email.com"
+
+// 🧾 ПОДИВИТИСЬ ВСІ GIT-НАЛАШТУВАННЯ
+git config --list
+git config --list --local
+git config --list --global
+
+// 📝 ДОДАТИ ЗМІНИ ТА ЗАКОМІТИТИ
+git add .
+git commit -m "commit message"
+
+// 🧠 ІСТОРІЯ КОМАНД (REPO RECOVERY)
+git reflog
+
+// ⏪ ВІДКАТ ДО ПОПЕРЕДНЬОГО СТАНУ (SOFT / HARD)
+git reset --soft HEAD~1
+git reset --hard HEAD~1
+
+// 🧹 ВИДАЛИТИ ВСЕ СМІТТЯ (НЕВІДСТЕЖУВАНІ ФАЙЛИ)
+git clean -fd
+
+// 💾 STASH — ЗБЕРЕГТИ / ВІДНОВИТИ ЗМІНИ
+git stash
+git stash list
+git stash pop
+git stash drop
+
+// ========================= BRANCHES =========================
+// 🌿 ПЕРЕЛІК ГІЛОК
+git branch
+git branch -a
+
+// 🌱 СТВОРИТИ ГІЛКУ
+git checkout -b feature/example
+
+// 🔀 ПЕРЕЙТИ НА ГІЛКУ
+git checkout feature/example
+git switch feature/example
+
+// 🧩 MERGE / ABORT
+git merge feature/example
+git merge --abort
+
+// 🎯 CHERRY-PICK (ЗАБРАТИ 1 КОМІТ)
+git cherry-pick <commit_hash>
+
+  // 🗑️ ВИДАЛЕННЯ ГІЛОК
+  git branch -d feature/example
+  git branch -D feature/example
+
+  // ========================= REMOTES =========================
+  // 🌍 ПОДИВИТИСЬ REMOTE
+  git remote -v
+
+  // ➕ ДОДАТИ REMOTE
+  git remote add origin https://github.com/user/repo.git
+
+  // 🔄 ЗМІНИТИ REMOTE URL
+  git remote set-url origin https://github.com/user/new-repo.git
+
+  // 🧲 PUSH / PULL
+  git push
+  git push -u origin feature/example
+  git pull
+
+  // ❌ ВИДАЛИТИ REMOTE ГІЛКУ
+  git push origin --delete feature/example
+
+  // 🔁 FETCH + CLEAN
+  git fetch -p
+
+  // ========================= MULTI-REPO / 2 GITHUB ACC =========================
+  // 🔐 ПЕРЕВІРИТИ SSH-КЛЮЧІ
+  ssh -T git@github.com
+
+  // 🔗 ПРИВ’ЯЗАТИ ДРУГИЙ REMOTE
+  git remote add second https://github.com/other-user/repo.git
+  git push second master
+
+  // ========================= ALIASES =========================
+  // ⚡ ЗРУЧНІ ALIAS
+  git config --global alias.st status
+  git config --global alias.co checkout
+  git config --global alias.br branch
+  git config --global alias.cm "commit -m"
+  git config --global alias.last "log -1 HEAD"
+
+  // ========================= FRONTEND / PROJECT =========================
+  // 📦 NPM / PACKAGE
+  npm install
+  npm run dev
+  npm run build
+  npm run lint
+
+  // 🔧 CLEAN CACHE
+  npm cache clean --force
+
+  // 🌐 UPDATE DEPENDENCIES
+  npm update
+
+  // ========================= FILES & FOLDERS =========================
+  // 📂 ПЕРЕГЛЯД ФАЙЛІВ / ПАПОК
+  dir
+  ls -la
+
+  // 📝 ПІДРАХУВАТИ КІЛЬКІСТЬ ФАЙЛІВ
+  ls | wc -l
+  Get-ChildItem -Recurse | Measure-Object | Select-Object Count
+
+  // 🗂️ СТРУКТУРА ПРОЕКТУ В TXT
+  tree /F > project-structure.txt
+  tree -L 2 > project-structure.txt
+
+  // 🧹 ОЧИСТИТИ TEMP / NODE_MODULES / DIST
+  rm -rf node_modules dist temp
+  rmdir /s /q node_modules\dist\temp
+
+  // 🔍 ПОШУК ФАЙЛІВ ПО NAMES / EXTENSIONS
+  dir *.scss /s
+  find . -name '*.scss'
+
+  // 🔄 ПЕРЕЙТИ В КОРІНЬ / ДИРЕКТОРІЮ
+  cd ..
+  cd src/components
+
+  // ⚡ POWER SHELL COOL COMMANDS
+  Get-Process
+  Get-Service
+  Clear-Host
+
+  // =========================================================================
+  // 💡 TIP: Якщо щось зламав — git reflog майже завжди рятує життя 😄
+  // =========================================================================

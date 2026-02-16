@@ -1,4 +1,4 @@
-// scripts/html-include-plugin.js
+/* scripts\html-include-plugin.js */
 import path from "path";
 import { createPostHtmlEngine } from "./posthtml-engine.js";
 

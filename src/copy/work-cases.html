@@ -1,0 +1,30 @@
+<layout src="@components/templates/main/main.html" locals='{
+  "title": "Work Cases",
+  "lang": "en",
+  "active": "work-cases"
+
+
+
+}'>
+
+  <!-- 🔥 Page entry point -->
+  <script type="module" src="./entries/page.work-cases.js"></script>
+
+  <block name="header">
+    <include src="@components/layout/header/header.html" locals='{
+      "active": "work-cases",
+      "home": "false",
+    }'>
+    </include>
+  </block>
+
+
+  <block name="main">
+    <include src="@components/pages/work-cases/work-cases.html" locals='{}'></include>
+  </block>
+
+  <block name="footer">
+    <include src="@components/layout/footer/footer.html" locals='{}'></include>
+  </block>
+
+</layout>

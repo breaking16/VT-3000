@@ -1,3 +1,4 @@
+/* src\components\layout\dev-pages\dev-pages.js */
 export function init() {
   const root = document.querySelector("[data-dev-pages]");
   if (!root) return;

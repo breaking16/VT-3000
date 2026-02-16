@@ -1,4 +1,4 @@
-// src/js/app.js
+/* src\js\app.js */
 
 import { log, mark, measure } from "./services/logger.js";
 

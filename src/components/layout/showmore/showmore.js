@@ -3,6 +3,9 @@
 // modern-showmore — VT-3000
 // supports: size | items + breakpoints + ARIA
 
+import "./showmore.scss";
+
+
 export function init(root) {
   const mode = root.dataset.wwShowmore || "size"; // size | items
   const value = Number(root.dataset.wwShowmoreContent) || 150; // px або кількість елементів

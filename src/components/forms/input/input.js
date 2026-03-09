@@ -1,5 +1,9 @@
 // src/components/forms/input/input.js
 
+
+
+import "./input.scss";
+
 export function init() {
   const inputs = document.querySelectorAll("[data-ww-input]");
   if (!inputs.length) return;

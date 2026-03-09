@@ -1,4 +1,5 @@
-// src/components/ui/theme-toggle/theme-toggle.js
+/* src\components\ui\theme-toggle\theme-toggle.js */
+import "./theme-toggle.scss";
 
 import { getTheme, toggleTheme } from "@js/services/theme.js";
 
@@ -12,7 +13,7 @@ export function init(root = document) {
       btn.textContent = theme === "dark" ? "☀️" : "🌙";
       btn.setAttribute(
         "aria-label",
-        theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+        theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
       );
     });
   };

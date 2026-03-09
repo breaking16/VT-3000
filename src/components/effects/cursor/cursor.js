@@ -1,6 +1,8 @@
 // src/components/effects/cursor/cursor.js
 // ⬆️ весь файл
 
+import "./cursor.scss";
+
 export function init() {
   const cursor = document.createElement("div");
   cursor.className = "cursor";

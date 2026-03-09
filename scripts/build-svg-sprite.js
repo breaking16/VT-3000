@@ -4,11 +4,13 @@ import path from "path";
 
 const ROOT = process.cwd();
 
-// 🟢 SVG іконки
+// 🟢 Source icons
 const ICONS_DIR = path.resolve(ROOT, "src/assets/svgicons");
 
-// 🟢 SVG sprite ДЛЯ INCLUDE
+// 🟢 Generated sprite
 const OUTPUT = path.resolve(ROOT, "src/assets/sprite.svg");
+
+// ─────────────────────────────────────────────
 
 if (!fs.existsSync(ICONS_DIR)) {
   console.log("ℹ️ svgicons folder not found — skipping sprite");
@@ -22,25 +24,42 @@ if (!files.length) {
   process.exit(0);
 }
 
+// ─────────────────────────────────────────────
+
+function cleanSvg(svg) {
+  return svg
+    .replace(/<\?xml.*?\?>/g, "") // remove xml header
+    .replace(/<!DOCTYPE.*?>/g, "") // remove doctype
+    .replace(/<svg[^>]*>/i, "") // remove opening svg
+    .replace(/<\/svg>/i, "") // remove closing svg
+    .replace(/fill="[^"]*"/gi, "") // remove fill
+    .replace(/stroke="[^"]*"/gi, "") // remove stroke
+    .replace(/style="[^"]*"/gi, "") // remove inline styles
+    .replace(/stroke-width="[^"]*"/gi, "") // optional cleanup
+    .replace(/\s{2,}/g, " ") // normalize spaces
+    .trim();
+}
+
+// ─────────────────────────────────────────────
+
 const symbols = files.map((file) => {
   const name = path.basename(file, ".svg");
-  const svg = fs.readFileSync(path.join(ICONS_DIR, file), "utf-8");
+  const fullPath = path.join(ICONS_DIR, file);
 
-  // viewBox
-  const viewBoxMatch = svg.match(/viewBox="([^"]+)"/);
+  const svg = fs.readFileSync(fullPath, "utf-8");
+
+  const viewBoxMatch = svg.match(/viewBox="([^"]+)"/i);
   const viewBox = viewBoxMatch ? viewBoxMatch[1] : "0 0 24 24";
 
-  // content
-  const content = svg
-    .replace(/<svg[^>]*>/, "")
-    .replace("</svg>", "")
-    .trim();
+  const content = cleanSvg(svg);
 
   return `
   <symbol id="icon-${name}" viewBox="${viewBox}">
     ${content}
   </symbol>`;
 });
+
+// ─────────────────────────────────────────────
 
 const sprite = `<!-- AUTO-GENERATED SVG SPRITE — DO NOT EDIT -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
@@ -49,6 +68,7 @@ ${symbols.join("\n")}
 `;
 
 fs.writeFileSync(OUTPUT, sprite);
+
 console.log(
   `🧩 SVG sprite generated → src/assets/sprite.svg (${files.length} icons)`,
 );

@@ -1,4 +1,4 @@
-// src/styles/mixins/_media.scss
+/* src\styles\mixins\_media.scss */
 
 @mixin up($width) {
   @media (min-width: $width) {

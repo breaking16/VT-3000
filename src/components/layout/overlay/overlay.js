@@ -1,4 +1,7 @@
 // src/components/layout/overlay/overlay.js
+
+import "./overlay.scss";
+
 import { unlockBody } from "@js/services/body.js";
 
 const SELECTOR = "[data-ww-overlay]";

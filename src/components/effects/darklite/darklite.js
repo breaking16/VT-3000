@@ -1,6 +1,8 @@
 // src/components/effects/darklite/darklite.js
 // ⬆️ весь файл
 
+import "./darklite.scss";
+
 export function init() {
   document.addEventListener("theme-change", () => {
     const overlay = document.createElement("div");

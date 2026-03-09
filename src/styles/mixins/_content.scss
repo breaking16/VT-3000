@@ -1,4 +1,4 @@
-// src\styles\mixins\_content.scss
+/* src\styles\mixins\_content.scss */
 // Add currency symbol
 @mixin currency($symbol) {
   &::after {

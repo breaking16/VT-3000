@@ -1,3 +1,5 @@
+import "./pagging.scss";
+
 export function init(root) {
   const items = root.querySelectorAll(".pagging__item");
 
@@ -9,7 +11,7 @@ export function init(root) {
       root.dispatchEvent(
         new CustomEvent("pagging:change", {
           detail: { page: index + 1 },
-        })
+        }),
       );
     });
   });

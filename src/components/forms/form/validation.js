@@ -1,5 +1,7 @@
 // src/components/forms/form/validation.js
 
+import "./form.scss";
+
 const validators = {
   required(value) {
     return value.trim() !== "";

@@ -1,4 +1,4 @@
-// src/js/services/logger.js
+/* src\js\services\logger.js */
 
 const IS_DEV = import.meta.env.DEV;
 
@@ -50,7 +50,7 @@ export function measure(name, start, end) {
       if (IS_DEV) {
         console.warn(
           `%c⚠ measure skipped: missing marks (${start} / ${end})`,
-          "color:#FFC107"
+          "color:#FFC107",
         );
       }
       return;

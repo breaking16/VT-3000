@@ -1,3 +1,5 @@
+import "./footer.scss";
+
 export function init() {
   const root = document.querySelector("[data-ww-footer]");
   if (!root) return;

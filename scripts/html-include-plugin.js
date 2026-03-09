@@ -10,8 +10,7 @@ export default function htmlIncludePlugin(options = {}) {
 
   return {
     name: "vt-posthtml-engine",
-    async transformIndexHtml(html) {
-      // Vite проганяє цю функцію для кожного html (index, contacts і т.д.)
+    async transformIndexHtml(html, ctx) {
       return await engine.processHtmlString(html, {});
     },
   };

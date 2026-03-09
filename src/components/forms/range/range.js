@@ -1,3 +1,5 @@
+import "./range.scss";
+
 import noUiSlider from "nouislider";
 
 export function init(el) {

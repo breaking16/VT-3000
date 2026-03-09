@@ -1,5 +1,7 @@
 // src/components/layout/swiper/swiper.js
 
+import "./swiper.scss";
+
 import Swiper from "swiper";
 import {
   Navigation,

@@ -1,4 +1,7 @@
 // src/components/custom/test/test.js
+
+import "./test.scss";
+
 import raw from "./test.html?raw";
 import { renderTemplate } from "@js/utils/render-template.js";
 

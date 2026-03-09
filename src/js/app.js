@@ -2,6 +2,9 @@
 
 import { log, mark, measure } from "./services/logger.js";
 
+import "./asset-entry.js"; // 🔥 реєстрація assets
+import "../styles/style.scss"; // тільки base + vars + reset
+
 /* =====================
    0️⃣ BOOT
 ===================== */
@@ -18,12 +21,6 @@ mark("app:start");
 mark("styles:start");
 
 import "../styles/style.scss";
-
-import.meta.glob("../components/custom/*/*.scss", { eager: true });
-import.meta.glob("../components/layout/*/*.scss", { eager: true });
-import.meta.glob("../components/ui/*/*.scss", { eager: true });
-import.meta.glob("../components/forms/*/*.scss", { eager: true });
-import.meta.glob("../components/effects/*/*.scss", { eager: true });
 
 mark("styles:end");
 measure("Styles loaded", "styles:start", "styles:end");
@@ -48,6 +45,7 @@ import { init as initScrollToPro } from "@components/effects/scrollto-pro/scroll
 import { init as initPreloader } from "@components/effects/preloader/preloader.js";
 import { init as initCursor } from "@components/effects/cursor/cursor.js";
 import { init as initDarklite } from "@components/effects/darklite/darklite.js";
+import { init as initMenu } from "@components/layout/menu/menu.js";
 
 mark("infra:end");
 measure("Infrastructure loaded", "infra:start", "infra:end");
@@ -75,6 +73,9 @@ log.info("Theme initialized");
 
 initRipple();
 // initCursor(); // optional
+
+// initMenu();
+log.info("Menu initialized");
 
 mark("global:init:end");
 measure("Global init", "global:init:start", "global:init:end");

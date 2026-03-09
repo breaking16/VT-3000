@@ -1,3 +1,5 @@
+import "./dynamic.scss";
+
 console.log("DYNAMIC FILE LOADED");
 
 export function init() {

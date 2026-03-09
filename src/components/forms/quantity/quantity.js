@@ -1,3 +1,5 @@
+import "./quantity.scss";
+
 export function init(root = document) {
   const quantities = root.querySelectorAll("[data-ww-quantity]");
   if (!quantities.length) return;

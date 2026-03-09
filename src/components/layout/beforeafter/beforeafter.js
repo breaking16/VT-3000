@@ -1,3 +1,5 @@
+import "./beforeafter.scss";
+
 export function init(root) {
   const range = root.querySelector(".beforeafter__range");
   const afterImg = root.querySelector(".beforeafter__img--after");

@@ -7,7 +7,7 @@
     "predev": "node scripts/build-dev-pages.js && node scripts/clean-svg.js && node scripts/build-svg-sprite.js && node scripts/build-fonts.js && node scripts/build-preload.js && node scripts/build-favicons.js",
     "dev": "concurrently \"node scripts/activity-watcher.js\" \"node scripts/break-reminder.js\" \"vite\"",
     "online": "node scripts/online.js",
-    "build": "node scripts/clean-svg.js && node scripts/build-svg-sprite.js && node scripts/build-fonts.js && node scripts/build-preload.js && node scripts/build-favicons.js && node scripts/build-images.js && vite build",
+    "build": "node scripts/clean-svg.js && node scripts/build-svg-sprite.js && node scripts/build-fonts.js && node scripts/build-preload.js && vite build && node scripts/build-images.js --build && node scripts/build-favicons.js --build",
     "preview": "vite preview",
     "build:zip": "npm run build && node scripts/build-zip.js",
     "images": "node scripts/build-images.js",
@@ -32,6 +32,9 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
-    "nouislider": "^15.8.1"
+    "isotope-layout": "^3.0.6",
+    "nouislider": "^15.8.1",
+    "swiper": "^12.1.1",
+    "tippy.js": "^6.3.7"
   }
 }

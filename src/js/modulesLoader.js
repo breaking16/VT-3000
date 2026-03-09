@@ -1,4 +1,4 @@
-/* src\js\modulesLoader.js */
+/* src/js/modulesLoader.js */
 import { log, mark, measure } from "./services/logger.js";
 
 console.log("INIT MODULES LOADER");
@@ -7,9 +7,10 @@ const IS_DEV = import.meta.env.DEV;
 const SLOW = 50;
 const CRITICAL = 120;
 
-/* -------------------------
+/* =====================================================
    HELPERS
-------------------------- */
+===================================================== */
+
 async function profileInit(loader, name, el = null, type = "MODULE") {
   const start = `mod:${type}:${name}:start`;
   const end = `mod:${type}:${name}:end`;
@@ -40,57 +41,81 @@ async function profileInit(loader, name, el = null, type = "MODULE") {
   }
 }
 
-/* -------------------------
-   CORE MODULES (data-ww-*)
-------------------------- */
-const CORE_MODULES = {
-  header: () => import("@components/layout/header/header.js"),
-  footer: () => import("@components/layout/footer/footer.js"),
-  overlay: () => import("@components/layout/overlay/overlay.js"),
-  menu: () => import("@components/layout/menu/menu.js"),
-  map: () => import("@components/layout/map/map.js"),
+/* =====================================================
+   AUTO REGISTRIES
+===================================================== */
 
-  tabs: () => import("@components/layout/tabs/tabs.js"),
-  spollers: () => import("@components/layout/spollers/spollers.js"),
-  popup: () => import("@components/layout/popup/popup.js"),
+// 🔥 CORE (все крім custom)
+const CORE_FILES = import.meta.glob(
+  "../components/{layout,forms,effects,ui}/**/*.js",
+);
 
-  form: () => import("@components/forms/form/form.js"),
-  input: () => import("@components/forms/input/input.js"),
-  masonry: () => import("@components/layout/mansory/mansory.js"),
+// 🔥 CUSTOM
+const CUSTOM_FILES = import.meta.glob("../components/custom/**/*.js");
 
-  marquee: () => import("@components/effects/marquee/marquee.js"),
-  ripple: () => import("@components/effects/ripple/ripple.js"),
+// 🔥 LAYOUT (для data-module)
+const LAYOUT_FILES = import.meta.glob("../components/layout/**/*.js");
 
-  quantity: () => import("@components/forms/quantity/quantity.js"),
-  checkbox: () => import("@components/forms/checkbox/checkbox.js"),
-  radio: () => import("@components/forms/radio/radio.js"),
+function buildRegistry(files) {
+  const registry = {};
 
-  // 🟣 NEW — modern showmore
-  showmore: () => import("@components/layout/showmore/showmore.js"),
-};
+  for (const path in files) {
+    const parts = path.split("/");
+    const file = parts[parts.length - 1];
+    const name = file.replace(".js", "");
 
-/* -------------------------
-   CORE INIT
-------------------------- */
+    registry[name] = files[path];
+  }
+
+  return registry;
+}
+
+const CORE_REGISTRY = buildRegistry(CORE_FILES);
+const CUSTOM_REGISTRY = buildRegistry(CUSTOM_FILES);
+const LAYOUT_REGISTRY = buildRegistry(LAYOUT_FILES);
+
+/* =====================================================
+   CACHE (щоб не імпортувати 10 разів)
+===================================================== */
+
+const loadedModules = new Set();
+
+/* =====================================================
+   CORE INIT (data-ww-*)
+===================================================== */
+
 async function initCoreModules() {
   log.group("CORE MODULES");
 
-  for (const name in CORE_MODULES) {
-    const selector = `[data-ww-${name}]`;
-    const nodes = document.querySelectorAll(selector);
-    if (!nodes.length) continue;
+  const nodes = document.querySelectorAll("*");
 
-    for (const el of nodes) {
-      await profileInit(CORE_MODULES[name], name, el, "CORE");
+  for (const el of nodes) {
+    for (const attr of el.attributes) {
+      if (!attr.name.startsWith("data-ww-")) continue;
+
+      const name = attr.name.replace("data-ww-", "");
+
+      const loader = CORE_REGISTRY[name];
+
+      if (!loader) {
+        if (IS_DEV) log.warn(`No CORE module → ${name}`);
+        continue;
+      }
+
+      if (loadedModules.has(`core-${name}`)) continue;
+
+      await profileInit(loader, name, el, "CORE");
+      loadedModules.add(`core-${name}`);
     }
   }
 
   log.groupEnd();
 }
 
-/* -------------------------
-   CUSTOM MODULES
-------------------------- */
+/* =====================================================
+   CUSTOM INIT (data-wwc-*)
+===================================================== */
+
 async function initCustomModules() {
   log.group("CUSTOM MODULES");
 
@@ -102,21 +127,27 @@ async function initCustomModules() {
 
       const name = attr.name.replace("data-wwc-", "");
 
-      await profileInit(
-        () => import(`@components/custom/${name}/${name}.js`),
-        name,
-        el,
-        "CUSTOM",
-      );
+      const loader = CUSTOM_REGISTRY[name];
+
+      if (!loader) {
+        if (IS_DEV) log.warn(`No CUSTOM module → ${name}`);
+        continue;
+      }
+
+      if (loadedModules.has(`custom-${name}`)) continue;
+
+      await profileInit(loader, name, el, "CUSTOM");
+      loadedModules.add(`custom-${name}`);
     }
   }
 
   log.groupEnd();
 }
 
-/* -------------------------
-   LAYOUT MODULES
-------------------------- */
+/* =====================================================
+   LAYOUT INIT (data-module="")
+===================================================== */
+
 async function initLayoutModules() {
   const nodes = document.querySelectorAll("[data-module]");
   if (!nodes.length) return;
@@ -125,21 +156,26 @@ async function initLayoutModules() {
 
   for (const el of nodes) {
     const name = el.dataset.module;
+    const loader = LAYOUT_REGISTRY[name];
 
-    await profileInit(
-      () => import(`@components/layout/${name}/${name}.js`),
-      name,
-      el,
-      "LAYOUT",
-    );
+    if (!loader) {
+      if (IS_DEV) log.warn(`No LAYOUT module → ${name}`);
+      continue;
+    }
+
+    if (loadedModules.has(`layout-${name}`)) continue;
+
+    await profileInit(loader, name, el, "LAYOUT");
+    loadedModules.add(`layout-${name}`);
   }
 
   log.groupEnd();
 }
 
-/* -------------------------
+/* =====================================================
    PUBLIC API
-------------------------- */
+===================================================== */
+
 export async function initModules() {
   mark("modules:init:start");
 

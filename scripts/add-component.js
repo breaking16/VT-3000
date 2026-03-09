@@ -1,4 +1,4 @@
-// scripts/add-component.js
+/* scripts\add-component.js */
 import fs from "fs";
 import path from "path";
 

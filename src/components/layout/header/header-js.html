@@ -1,0 +1,23 @@
+<header class="header" data-ww-header data-menu="main" data-active="[[active]]">
+
+  <div class="header__container container">
+
+    <a href="index.html" class="header__logo">VT-3000</a>
+
+    <!-- Desktop -->
+    <nav class="header__nav header__nav--desktop">
+      <ul class="menu__list" data-ww-menu-desktop-list></ul>
+    </nav>
+
+    <div class="header__actions">
+      <button class="theme-toggle" data-theme-toggle>🌙</button>
+      <button class="menu-toggle" type="button" data-ww-menu-open>
+        <span class="menu-toggle__bar"></span>
+      </button>
+    </div>
+
+  </div>
+
+  <include src="@components/layout/menu/menu.html" locals='{"active":"[[active]]"}'></include>
+
+</header>

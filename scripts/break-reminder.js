@@ -3,7 +3,7 @@
    VT-3000 — BREAK REMINDER (CLI)
    School mode: 45 min work / 10 min break
 ==================================================================================== */
-
+/* scripts\break-reminder.js */
 const WORK_MIN = 45;
 const BREAK_MIN = 10;
 const CHECK_MS = 60_000;

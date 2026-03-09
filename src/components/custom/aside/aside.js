@@ -1,3 +1,5 @@
+import "./aside.scss";
+
 import html from "./aside.html?raw";
 
 export function init() {

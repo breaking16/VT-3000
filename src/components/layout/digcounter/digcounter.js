@@ -1,3 +1,5 @@
+import "./digcounter.scss";
+
 export function init(el) {
   const valueEl = el.querySelector(".digcounter__value");
   const target = Number(el.dataset.value);

@@ -1,3 +1,5 @@
+import "./form.scss";
+
 import { validateField, setFieldState } from "./validation.js";
 
 export function init() {

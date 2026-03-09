@@ -1,147 +1,3302 @@
-// ========================= GIT CHEATSHEET (EXTENDED) =========================
-// 🔍 Поточний статус репозиторію
-git status
+Ось основні файли шаблону :
+1)Основний конфігураційний файл шаблона(проаналізуй):
+/* vite.config.js */
+LINES: 1-136
+import { defineConfig } from "vite";
+import path from "node:path";
+import fg from "fast-glob";
+import htmlIncludePlugin from "./scripts/html-include-plugin.js";
 
-// 👤 ХТО Я ЗАРАЗ? (user.name / user.email)
-git config user.name
-git config user.email
+const rootDir = path.resolve(__dirname, "src");
 
-// 👤 ВСТАНОВИТИ USER ДЛЯ ПОТОЧНОГО ПРОЕКТУ
-git config user.name "Your Name"
-git config user.email "you@email.com"
+function htmlInputs() {
+const files = fg.sync(["src/*.html", "!src/dev-root.html"]);
+const input = {};
 
-// 👤 ВСТАНОВИТИ USER ГЛОБАЛЬНО (ДЛЯ ВСІХ ПРОЕКТІВ)
-git config --global user.name "Your Name"
-git config --global user.email "you@email.com"
+for (const file of files) {
+const name = path.basename(file, ".html");
+input[name] = path.resolve(__dirname, file);
+}
 
-// 🧾 ПОДИВИТИСЬ ВСІ GIT-НАЛАШТУВАННЯ
-git config --list
-git config --list --local
-git config --list --global
+return input;
+}
 
-// 📝 ДОДАТИ ЗМІНИ ТА ЗАКОМІТИТИ
-git add .
-git commit -m "commit message"
+export default defineConfig(({ command, mode }) => {
+const isDev = command === "serve";
+const isProd = mode === "production";
 
-// 🧠 ІСТОРІЯ КОМАНД (REPO RECOVERY)
-git reflog
+return {
+root: rootDir,
+base: "./",
 
-// ⏪ ВІДКАТ ДО ПОПЕРЕДНЬОГО СТАНУ (SOFT / HARD)
-git reset --soft HEAD~1
-git reset --hard HEAD~1
+resolve: {
+alias: {
+"@components": path.resolve(rootDir, "components"),
+"@js": path.resolve(rootDir, "js"),
+"@styles": path.resolve(rootDir, "styles"),
+"@img": path.resolve(rootDir, "assets/img"),
+"@fonts": path.resolve(rootDir, "assets/fonts"), // 🔥 NEW
+},
+},
 
-// 🧹 ВИДАЛИТИ ВСЕ СМІТТЯ (НЕВІДСТЕЖУВАНІ ФАЙЛИ)
-git clean -fd
+css: {
+devSourcemap: isDev,
+preprocessorOptions: {
+scss: {
+additionalData: `@use "@styles/vars" as *;`,
+},
+},
+},
 
-// 💾 STASH — ЗБЕРЕГТИ / ВІДНОВИТИ ЗМІНИ
-git stash
-git stash list
-git stash pop
-git stash drop
+plugins: [
+htmlIncludePlugin({
+root: rootDir,
+aliases: {
+"@components": "components",
+"@js": "js",
+"@styles": "styles",
+"@img": "assets/img",
+"@fonts": "assets/fonts", // 🔥 NEW
+},
+}),
 
-// ========================= BRANCHES =========================
-// 🌿 ПЕРЕЛІК ГІЛОК
-git branch
-git branch -a
+{
+name: "html-dev-flag",
+transformIndexHtml(html) {
+if (isDev) {
+return html.replace("<html", '<html class="is-dev"' ); } return html; }, }, ], build: { outDir:
+  path.resolve(__dirname, "dist" ), emptyOutDir: true, sourcemap: true, // 🔥 для дебагу замовника minify: isProd
+  ? "esbuild" : false, cssCodeSplit: true, rollupOptions: { input: htmlInputs(), output: {
+  entryFileNames: "js/[name].[hash].js" , chunkFileNames: "js/[name].[hash].js" , assetFileNames: (assetInfo)=> {
+  const name = assetInfo.name ?? "";
 
-// 🌱 СТВОРИТИ ГІЛКУ
-git checkout -b feature/example
+  if (name.endsWith(".css")) {
+  return "css/[name].[hash][extname]";
+  }
 
-// 🔀 ПЕРЕЙТИ НА ГІЛКУ
-git checkout feature/example
-git switch feature/example
+  if (/\.(woff2?|ttf|otf)$/.test(name)) {
+  return "assets/fonts/[name][extname]";
+  }
 
-// 🧩 MERGE / ABORT
-git merge feature/example
-git merge --abort
+  if (/\.(png|jpe?g|svg|webp|gif|ico)$/.test(name)) {
+  return "assets/img/[name][extname]";
+  }
 
-// 🎯 CHERRY-PICK (ЗАБРАТИ 1 КОМІТ)
-git cherry-pick <commit_hash>
+  return "assets/[name][extname]";
+  },
 
-  // 🗑️ ВИДАЛЕННЯ ГІЛОК
-  git branch -d feature/example
-  git branch -D feature/example
+  manualChunks(id) {
+  if (id.includes("node_modules")) {
+  return "vendor";
+  }
 
-  // ========================= REMOTES =========================
-  // 🌍 ПОДИВИТИСЬ REMOTE
-  git remote -v
+  if (id.includes("/components/")) {
+  const parts = id.split("/");
+  const compIndex = parts.indexOf("components");
 
-  // ➕ ДОДАТИ REMOTE
-  git remote add origin https://github.com/user/repo.git
+  if (compIndex !== -1 && parts.length > compIndex + 2) {
+  const type = parts[compIndex + 1];
+  const name = parts[compIndex + 2];
 
-  // 🔄 ЗМІНИТИ REMOTE URL
-  git remote set-url origin https://github.com/user/new-repo.git
+  return `comp-${type}-${name}`;
+  }
+  }
+  },
+  },
+  },
+  },
 
-  // 🧲 PUSH / PULL
-  git push
-  git push -u origin feature/example
-  git pull
+  server: {
+  open: true,
+  },
 
-  // ❌ ВИДАЛИТИ REMOTE ГІЛКУ
-  git push origin --delete feature/example
+  define: {
+  __DEV__: isDev,
+  __PROD__: isProd,
+  },
+  };
+  });
+  END FILE
+  2)Файл залежностей(проаналізуй):
+  LINES: 1-40
+  {
+  "name": "vt-3000",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+  "predev": "node scripts/build-dev-pages.js && node scripts/clean-svg.js && node scripts/build-svg-sprite.js && node
+  scripts/build-fonts.js && node scripts/build-preload.js && node scripts/build-favicons.js",
+  "dev": "concurrently \"node scripts/activity-watcher.js\" \"node scripts/break-reminder.js\" \"vite\"",
+  "online": "node scripts/online.js",
+  "build": "node scripts/clean-svg.js && node scripts/build-svg-sprite.js && node scripts/build-fonts.js && node
+  scripts/build-preload.js && vite build && node scripts/build-images.js --build && node scripts/build-favicons.js
+  --build",
+  "preview": "vite preview",
+  "build:zip": "npm run build && node scripts/build-zip.js",
+  "images": "node scripts/build-images.js",
+  "add": "node scripts/add-component.js",
+  "new": "node scripts/create-page.js",
+  "stat:build": "node scripts/stat-build.js",
+  "stat": "node scripts/stat.js"
+  },
+  "devDependencies": {
+  "chokidar": "^5.0.0",
+  "concurrently": "^9.2.1",
+  "fast-glob": "^3.3.3",
+  "favicons": "^7.2.0",
+  "posthtml": "^0.16.7",
+  "posthtml-parser": "^0.12.1",
+  "posthtml-render": "^3.0.0",
+  "qrcode-terminal": "^0.12.0",
+  "sass": "^1.96.0",
+  "sharp": "^0.34.5",
+  "svgo": "^4.0.0",
+  "ttf2woff2": "^8.0.0",
+  "vite": "^5.0.0"
+  },
+  "dependencies": {
+  "isotope-layout": "^3.0.6",
+  "nouislider": "^15.8.1",
+  "swiper": "^12.1.1",
+  "tippy.js": "^6.3.7"
+  }
+  }
+  END FILE
 
-  // 🔁 FETCH + CLEAN
-  git fetch -p
+  3)Шаблон для побудови сторінки(проаналізуй):
+  <!-- ←←← src\components\templates\main\main.html →→→ -->
+  LINES: 1-39
+  <!doctype html>
+  <html lang="[[lang]]">
 
-  // ========================= MULTI-REPO / 2 GITHUB ACC =========================
-  // 🔐 ПЕРЕВІРИТИ SSH-КЛЮЧІ
-  ssh -T git@github.com
+  <include src="@components/layout/head/head.html"></include>
 
-  // 🔗 ПРИВ’ЯЗАТИ ДРУГИЙ REMOTE
-  git remote add second https://github.com/other-user/repo.git
-  git push second master
+  <body data-module="dynamic">
+    <div class="wrapper">
 
-  // ========================= ALIASES =========================
-  // ⚡ ЗРУЧНІ ALIAS
-  git config --global alias.st status
-  git config --global alias.co checkout
-  git config --global alias.br branch
-  git config --global alias.cm "commit -m"
-  git config --global alias.last "log -1 HEAD"
+      <!-- HEADER -->
+      <slot name="header"></slot>
 
-  // ========================= FRONTEND / PROJECT =========================
-  // 📦 NPM / PACKAGE
-  npm install
-  npm run dev
-  npm run build
-  npm run lint
+      <!-- PAGE -->
+      <main class="page">
+        <slot name="main"></slot>
+      </main>
 
-  // 🔧 CLEAN CACHE
-  npm cache clean --force
+      <!-- FOOTER -->
+      <footer class="footer">
+        <slot name="footer"></slot>
+      </footer>
 
-  // 🌐 UPDATE DEPENDENCIES
-  npm update
+    </div>
 
-  // ========================= FILES & FOLDERS =========================
-  // 📂 ПЕРЕГЛЯД ФАЙЛІВ / ПАПОК
-  dir
-  ls -la
 
-  // 📝 ПІДРАХУВАТИ КІЛЬКІСТЬ ФАЙЛІВ
-  ls | wc -l
-  Get-ChildItem -Recurse | Measure-Object | Select-Object Count
 
-  // 🗂️ СТРУКТУРА ПРОЕКТУ В TXT
-  tree /F > project-structure.txt
-  tree -L 2 > project-structure.txt
+    <!-- DEV TOGGLE (GLOBAL) -->
+    <div class="dev-toggle" data-dev-only>
+      <button class="dev-toggle__btn" type="button" aria-label="DEV menu" onclick="location.href='/dev-root.html'">
+        ⚙ DEV
+      </button>
+    </div>
 
-  // 🧹 ОЧИСТИТИ TEMP / NODE_MODULES / DIST
-  rm -rf node_modules dist temp
-  rmdir /s /q node_modules\dist\temp
+    <!-- SVG SPRITE -->
+    <include src="assets/sprite.svg"></include>
 
-  // 🔍 ПОШУК ФАЙЛІВ ПО NAMES / EXTENSIONS
-  dir *.scss /s
-  find . -name '*.scss'
+    <script type="module" src="/js/app.js"></script>
+  </body>
+  END FILE
+  4)Головна сторінка(проаналізуй):
+  <!-- src\index.html -->
+  LINES: 1-30
+  <layout src="@components/templates/main/main.html" locals='{
+  "title": "Home",
+  "lang": "en",
+  "active": "home "
 
-  // 🔄 ПЕРЕЙТИ В КОРІНЬ / ДИРЕКТОРІЮ
-  cd ..
-  cd src/components
 
-  // ⚡ POWER SHELL COOL COMMANDS
-  Get-Process
-  Get-Service
-  Clear-Host
+}'>
 
-  // =========================================================================
-  // 💡 TIP: Якщо щось зламав — git reflog майже завжди рятує життя 😄
-  // =========================================================================
+    <!-- 🔥 Page entry point -->
+    <script type="module" src="/entries/page.index.js"></script>
+
+    <block name="header">
+      <include src="@components/layout/header/header.html" locals='{
+      "active": "home",
+      "home": "true"
+    }'>
+      </include>
+    </block>
+
+
+    <block name="main">
+      <include src="@components/pages/home/home.html" locals='{}'></include>
+    </block>
+
+    <block name="footer">
+      <include src="@components/layout/footer/footer.html" locals='{}'></include>
+    </block>
+
+  </layout>
+  END FILE
+  5)Основний файл входу-логіки(проаналізуй):
+  /* src\js\app.js */
+  LINES: 1-144
+  import { log, mark, measure } from "./services/logger.js";
+
+  import "./asset-entry.js"; // 🔥 реєстрація assets
+  import "../styles/style.scss"; // тільки base + vars + reset
+
+  /* =====================
+  0️⃣ BOOT
+  ===================== */
+
+  log.banner();
+  log.boot("startup…");
+
+  mark("app:start");
+
+  /* =====================
+  1️⃣ GLOBAL STYLES
+  ===================== */
+
+  mark("styles:start");
+
+  import "../styles/style.scss";
+
+  mark("styles:end");
+  measure("Styles loaded", "styles:start", "styles:end");
+
+  /* =====================
+  2️⃣ INFRASTRUCTURE
+  ===================== */
+
+  mark("infra:start");
+
+  import { initModules } from "./modulesLoader.js";
+  import { initWatcherPro } from "@components/effects/watcher-pro/watcher-pro.js";
+
+  import { getTheme, setTheme } from "./services/theme.js";
+  import { init as initThemeToggle } from "@components/ui/theme-toggle/theme-toggle.js";
+
+  import { init as initRipple } from "@components/effects/ripple/ripple.js";
+
+  import { init as initScrollTo } from "@components/effects/scrollto/scrollto.js";
+  import { init as initScrollToPro } from "@components/effects/scrollto-pro/scrollto-pro.js";
+
+  import { init as initPreloader } from "@components/effects/preloader/preloader.js";
+  import { init as initCursor } from "@components/effects/cursor/cursor.js";
+  import { init as initDarklite } from "@components/effects/darklite/darklite.js";
+  import { init as initMenu } from "@components/layout/menu/menu.js";
+
+  mark("infra:end");
+  measure("Infrastructure loaded", "infra:start", "infra:end");
+
+  /* =====================
+  3️⃣ GLOBAL INIT
+  ===================== */
+
+  log.group("Global init");
+  mark("global:init:start");
+
+  initWatcherPro();
+  log.info("Watcher-PRO ready");
+
+  initScrollTo();
+  initPreloader();
+  initDarklite();
+
+  initScrollToPro();
+  log.info("ScrollTo-PRO ready");
+
+  setTheme(getTheme());
+  initThemeToggle();
+  log.info("Theme initialized");
+
+  initRipple();
+  // initCursor(); // optional
+
+  // initMenu();
+  log.info("Menu initialized");
+
+  mark("global:init:end");
+  measure("Global init", "global:init:start", "global:init:end");
+
+  log.groupEnd();
+
+  /* =====================
+  4️⃣ PAGE-BASED JS
+  ===================== */
+
+  const page = location.pathname.split("/").pop().replace(".html", "") || "index";
+
+  mark(`page:${page}:start`);
+
+  const pageMap = {
+  index: () => import("../components/pages/home/home.js"),
+  contacts: () => import("../components/pages/contacts/contacts.js"),
+  work: () => import("../components/pages/work/work.js"),
+  "dev-root": () => import("../components/pages/dev-root/dev-root.js"),
+  };
+
+  if (pageMap[page]) {
+  pageMap[page]()
+  .then(() => {
+  mark(`page:${page}:end`);
+  measure(`Page init: ${page}`, `page:${page}:start`, `page:${page}:end`);
+  log.page(`${page}.js loaded`);
+  })
+  .catch((e) => log.error(`[PAGE ERROR] ${page}`, e));
+  }
+
+  /* =====================
+  5️⃣ DEV ONLY
+  ===================== */
+
+  if (import.meta.env.DEV) {
+  import("./dev-icons.js").then(() => log.info("Dev icons loaded"));
+
+  import("./productivity/break-reminder.js")
+  .then((m) => {
+  m.initBreakReminder();
+  log.info("Break reminder active ⏳");
+  })
+  .catch((e) => log.warn("Break reminder failed", e));
+  }
+
+  /* =====================
+  6️⃣ MODULES
+  ===================== */
+
+  mark("modules:init:start");
+
+  initModules();
+  log.info("Modules initialized");
+
+  mark("modules:init:end");
+  measure("Modules init", "modules:init:start", "modules:init:end");
+
+  /* =====================
+  🏁 APP READY
+  ===================== */
+
+  mark("app:end");
+  measure("APP TOTAL", "app:start", "app:end");
+
+  log.boot("ready 🚀");
+  END FILE
+  6)Файл модулів (проаналізуй) :
+  ф/* src/js/modulesLoader.js */
+  LINES: 1-188
+  import { log, mark, measure } from "./services/logger.js";
+
+  console.log("INIT MODULES LOADER");
+
+  const IS_DEV = import.meta.env.DEV;
+  const SLOW = 50;
+  const CRITICAL = 120;
+
+  /* =====================================================
+  HELPERS
+  ===================================================== */
+
+  async function profileInit(loader, name, el = null, type = "MODULE") {
+  const start = `mod:${type}:${name}:start`;
+  const end = `mod:${type}:${name}:end`;
+
+  mark(start);
+
+  try {
+  const mod = await loader();
+  mod?.init?.(el);
+  } catch (e) {
+  log.error(`${type} FAIL → ${name}`);
+  console.error(e);
+  return;
+  }
+
+  mark(end);
+  const entry = measure(`⏱ ${type} ${name}`, start, end);
+  if (!entry || !IS_DEV) return;
+
+  const time = entry.duration.toFixed(1);
+
+  if (entry.duration > CRITICAL) {
+  log.error(`${type} ${name} ⏱ ${time} ms ❌ CRITICAL`);
+  } else if (entry.duration > SLOW) {
+  log.warn(`${type} ${name} ⏱ ${time} ms ⚠ SLOW`);
+  } else {
+  log.module(`${type} ${name} ⏱ ${time} ms`);
+  }
+  }
+
+  /* =====================================================
+  AUTO REGISTRIES
+  ===================================================== */
+
+  // 🔥 CORE (все крім custom)
+  const CORE_FILES = import.meta.glob(
+  "../components/{layout,forms,effects,ui}/**/*.js",
+  );
+
+  // 🔥 CUSTOM
+  const CUSTOM_FILES = import.meta.glob("../components/custom/**/*.js");
+
+  // 🔥 LAYOUT (для data-module)
+  const LAYOUT_FILES = import.meta.glob("../components/layout/**/*.js");
+
+  function buildRegistry(files) {
+  const registry = {};
+
+  for (const path in files) {
+  const parts = path.split("/");
+  const file = parts[parts.length - 1];
+  const name = file.replace(".js", "");
+
+  registry[name] = files[path];
+  }
+
+  return registry;
+  }
+
+  const CORE_REGISTRY = buildRegistry(CORE_FILES);
+  const CUSTOM_REGISTRY = buildRegistry(CUSTOM_FILES);
+  const LAYOUT_REGISTRY = buildRegistry(LAYOUT_FILES);
+
+  /* =====================================================
+  CACHE (щоб не імпортувати 10 разів)
+  ===================================================== */
+
+  const loadedModules = new Set();
+
+  /* =====================================================
+  CORE INIT (data-ww-*)
+  ===================================================== */
+
+  async function initCoreModules() {
+  log.group("CORE MODULES");
+
+  const nodes = document.querySelectorAll("*");
+
+  for (const el of nodes) {
+  for (const attr of el.attributes) {
+  if (!attr.name.startsWith("data-ww-")) continue;
+
+  const name = attr.name.replace("data-ww-", "");
+
+  const loader = CORE_REGISTRY[name];
+
+  if (!loader) {
+  if (IS_DEV) log.warn(`No CORE module → ${name}`);
+  continue;
+  }
+
+  if (loadedModules.has(`core-${name}`)) continue;
+
+  await profileInit(loader, name, el, "CORE");
+  loadedModules.add(`core-${name}`);
+  }
+  }
+
+  log.groupEnd();
+  }
+
+  /* =====================================================
+  CUSTOM INIT (data-wwc-*)
+  ===================================================== */
+
+  async function initCustomModules() {
+  log.group("CUSTOM MODULES");
+
+  const nodes = document.querySelectorAll("*");
+
+  for (const el of nodes) {
+  for (const attr of el.attributes) {
+  if (!attr.name.startsWith("data-wwc-")) continue;
+
+  const name = attr.name.replace("data-wwc-", "");
+
+  const loader = CUSTOM_REGISTRY[name];
+
+  if (!loader) {
+  if (IS_DEV) log.warn(`No CUSTOM module → ${name}`);
+  continue;
+  }
+
+  if (loadedModules.has(`custom-${name}`)) continue;
+
+  await profileInit(loader, name, el, "CUSTOM");
+  loadedModules.add(`custom-${name}`);
+  }
+  }
+
+  log.groupEnd();
+  }
+
+  /* =====================================================
+  LAYOUT INIT (data-module="")
+  ===================================================== */
+
+  async function initLayoutModules() {
+  const nodes = document.querySelectorAll("[data-module]");
+  if (!nodes.length) return;
+
+  log.group("LAYOUT MODULES");
+
+  for (const el of nodes) {
+  const name = el.dataset.module;
+  const loader = LAYOUT_REGISTRY[name];
+
+  if (!loader) {
+  if (IS_DEV) log.warn(`No LAYOUT module → ${name}`);
+  continue;
+  }
+
+  if (loadedModules.has(`layout-${name}`)) continue;
+
+  await profileInit(loader, name, el, "LAYOUT");
+  loadedModules.add(`layout-${name}`);
+  }
+
+  log.groupEnd();
+  }
+
+  /* =====================================================
+  PUBLIC API
+  ===================================================== */
+
+  export async function initModules() {
+  mark("modules:init:start");
+
+  await initCoreModules();
+  await initCustomModules();
+  await initLayoutModules();
+
+  mark("modules:init:end");
+  measure("Modules init", "modules:init:start", "modules:init:end");
+  }
+  END FILE
+  7)Скрипт побудови HTML(допоміжний):
+  /* scripts\html-include-plugin.js */
+  LINES: 1-17
+  import path from "path";
+  import { createPostHtmlEngine } from "./posthtml-engine.js";
+
+  export default function htmlIncludePlugin(options = {}) {
+  const root = options.root || process.cwd();
+  const aliases = options.aliases || {};
+
+  const engine = createPostHtmlEngine({ root, aliases });
+
+  return {
+  name: "vt-posthtml-engine",
+  async transformIndexHtml(html, ctx) {
+  return await engine.processHtmlString(html, {});
+  },
+  };
+  }
+  END FILE
+  8)Скрипт побудови HTML(ОСНОВНИЙ):
+  /* scripts\posthtml-engine.js */
+  LINES: 1-305
+  import fs from "fs";
+  import path from "path";
+  import { parser as parse } from "posthtml-parser";
+  import { render } from "posthtml-render";
+
+  export function createPostHtmlEngine({ root, aliases = {} }) {
+  function resolveAlias(src) {
+  for (const key in aliases) {
+  if (src.startsWith(key)) {
+  return path.resolve(root, src.replace(key, aliases[key]));
+  }
+  }
+  return path.resolve(root, src);
+  }
+
+  function read(filePath) {
+  return fs.readFileSync(filePath, "utf-8");
+  }
+
+  function safeJson(str) {
+  if (!str) return {};
+  try {
+  return JSON.parse(str);
+  } catch {
+  return {};
+  }
+  }
+
+  function getByPath(obj, pathStr) {
+  return pathStr.split(".").reduce((acc, k) => acc?.[k], obj);
+  }
+
+  // replaces [[a]] and [[a.b]] but keeps unresolved markers
+  function replaceMarkers(str, ctx) {
+  if (typeof str !== "string") return str;
+  return str.replace(/\[\[([^\]]+)]]/g, (full, key) => {
+  const val = key.includes(".") ? getByPath(ctx, key) : ctx[key];
+  return val === undefined || val === null ? full : String(val);
+  });
+  }
+
+  // walk tree and replace markers in text + attrs
+  function applyContextToTree(tree, ctx) {
+  function walk(node) {
+  if (typeof node === "string") return replaceMarkers(node, ctx);
+
+  if (Array.isArray(node)) return node.map(walk);
+
+  if (node && typeof node === "object") {
+  if (node.attrs) {
+  for (const k of Object.keys(node.attrs)) {
+  node.attrs[k] = replaceMarkers(node.attrs[k], ctx);
+  }
+  }
+  if (node.content) node.content = node.content.map(walk);
+  return node;
+  }
+
+  return node;
+  }
+  return walk(tree);
+  }
+
+  function parseLocalsFromAttrs(node) {
+  const localsRaw = node?.attrs?.locals;
+  return safeJson(localsRaw);
+  }
+
+  function mergeCtx(parent, own) {
+  return { ...(parent || {}), ...(own || {}) };
+  }
+
+  function evalIfCondition(conditionRaw, ctx) {
+  // expected forms:
+  // "'[[active]]' === '[[item.id]]'"
+  // "'[[home]]' !== 'true'"
+  const cond = replaceMarkers(conditionRaw || "", ctx).trim();
+
+  // normalize: "left" === "right"
+  const m = cond.match(/^['"](.+?)['"]\s*(===|!==)\s*['"](.+?)['"]$/);
+  if (!m) return false;
+
+  const left = m[1];
+  const op = m[2];
+  const right = m[3];
+
+  return op === "===" ? left === right : left !== right;
+  }
+
+  async function processHtmlString(html, ctx = {}) {
+  const tree = parse(html, { recognizeSelfClosing: true });
+
+  async function transform(nodes, localCtx) {
+  if (!Array.isArray(nodes)) return nodes;
+
+  const out = [];
+
+  // IMPORTANT: classic for-loop so we can "consume" <else>
+    for (let i = 0; i < nodes.length; i++) { const node=nodes[i]; // text node if (typeof node==="string" ) {
+      out.push(replaceMarkers(node, localCtx)); continue; } // unknown node if (!node || typeof node !=="object" ) {
+      out.push(node); continue; } const tag=node.tag; // ⛔️ NEVER render <else> directly (else must be consumed only by
+      <if>)
+        if (tag === "else") {
+        continue;
+        }
+
+        // ---- <layout> ----
+          if (tag === "layout") {
+          const layoutLocals = parseLocalsFromAttrs(node);
+          const ctx2 = mergeCtx(localCtx, layoutLocals);
+
+          const src = node.attrs?.src;
+          if (!src) {
+          const inner = await transform(node.content || [], ctx2);
+          out.push(...inner);
+          continue;
+          }
+
+          const layoutPath = resolveAlias(src);
+          const layoutHtml = read(layoutPath);
+
+          // gather blocks from inside <layout>
+            const blocks = {};
+            const children = node.content || [];
+
+            for (const ch of children) {
+            if (typeof ch === "object" && ch?.tag === "block") {
+            const name = ch.attrs?.name;
+            if (!name) continue;
+            const processedBlockNodes = await transform(ch.content || [], ctx2);
+            blocks[name] = processedBlockNodes;
+            }
+            }
+
+            // parse layout template and replace <slot>
+              const layoutTree = parse(layoutHtml, { recognizeSelfClosing: true });
+
+              async function replaceSlots(nodes2) {
+              if (!Array.isArray(nodes2)) return nodes2;
+              const res = [];
+
+              for (const n of nodes2) {
+              if (typeof n === "string") {
+              res.push(replaceMarkers(n, ctx2));
+              continue;
+              }
+
+              if (n && typeof n === "object") {
+              if (n.tag === "slot") {
+              const slotName = n.attrs?.name;
+              const fallback = n.content || [];
+              const slotContent =
+              blocks[slotName] ?? (await replaceSlots(fallback));
+
+              res.push(
+              ...(Array.isArray(slotContent) ? slotContent : [slotContent]),
+              );
+              continue;
+              }
+
+              if (n.content) n.content = await replaceSlots(n.content);
+
+              if (n.attrs) {
+              for (const k of Object.keys(n.attrs)) {
+              n.attrs[k] = replaceMarkers(n.attrs[k], ctx2);
+              }
+              }
+
+              res.push(n);
+              continue;
+              }
+
+              res.push(n);
+              }
+
+              return res;
+              }
+
+              const withSlots = await replaceSlots(layoutTree);
+
+              // now process includes/each/if inside layout result
+              const fully = await transform(withSlots, ctx2);
+              out.push(...fully);
+              continue;
+              }
+
+              // ---- <include> ----
+                if (tag === "include") {
+                const includeLocals = parseLocalsFromAttrs(node);
+                const ctx2 = mergeCtx(localCtx, includeLocals);
+
+                const src = node.attrs?.src;
+                if (!src) continue;
+
+                const filePath = resolveAlias(src);
+                const content = read(filePath);
+
+                const includedTree = parse(content, { recognizeSelfClosing: true });
+                const processed = await transform(includedTree, ctx2);
+                out.push(...processed);
+                continue;
+                }
+
+                // ---- <each> ----
+                  if (tag === "each") {
+                  const loopRaw = node.attrs?.loop || "item";
+                  const src = node.attrs?.src;
+                  const templateNodes = node.content || [];
+
+                  let list = [];
+                  let varName = "item";
+
+                  // inline syntax: loop="item in[ {...}, {...} ]"
+                  const inlineMatch = loopRaw.match(/^(\w+)\s+in\s+([\s\S]+)$/);
+
+                  if (inlineMatch) {
+                  varName = inlineMatch[1];
+                  try {
+                  list = JSON.parse(inlineMatch[2]);
+                  } catch {
+                  list = [];
+                  }
+                  } else if (src) {
+                  // JSON file syntax
+                  varName = loopRaw;
+                  const filePath = resolveAlias(src);
+                  try {
+                  list = JSON.parse(read(filePath));
+                  } catch {
+                  list = [];
+                  }
+                  }
+
+                  for (const item of list) {
+                  const ctx2 = mergeCtx(localCtx, { [varName]: item });
+                  const cloned = JSON.parse(JSON.stringify(templateNodes));
+                  const processed = await transform(cloned, ctx2);
+                  out.push(...processed);
+                  }
+
+                  continue;
+                  }
+                  // ---- <if> (else is ALWAYS inside if) ----
+                    if (tag === "if") {
+                    const cond = node.attrs?.condition || "";
+                    const ok = evalIfCondition(cond, localCtx);
+
+                    const children = node.content || [];
+
+                    let yesNodes = [];
+                    let elseNodes = [];
+                    let inElse = false;
+
+                    for (const ch of children) {
+                    if (typeof ch === "object" && ch.tag === "else") {
+                    inElse = true;
+                    elseNodes = ch.content || [];
+                    continue;
+                    }
+                    if (!inElse) yesNodes.push(ch);
+                    }
+
+                    const yes = await transform(yesNodes, localCtx);
+                    const no = await transform(elseNodes, localCtx);
+
+                    out.push(...(ok ? yes : no));
+                    continue;
+                    }
+
+                    // default: recurse children & replace markers in attrs
+                    if (node.attrs) {
+                    for (const k of Object.keys(node.attrs)) {
+                    node.attrs[k] = replaceMarkers(node.attrs[k], localCtx);
+                    }
+                    }
+
+                    if (node.content) node.content = await transform(node.content, localCtx);
+                    out.push(node);
+                    }
+
+                    return out;
+                    }
+
+                    const transformed = await transform(tree, ctx);
+                    const withCtx = applyContextToTree(transformed, ctx); // safety pass
+                    return render(withCtx);
+                    }
+
+                    return { processHtmlString };
+                    }
+                    END FILE
+                    9)Шапка сайта(проаналізуй):
+                    <!-- src/components/layout/header/header.html -->
+                    LINES: 1-77
+                    <header class="header" data-ww-header>
+                      <div class="header__container container">
+
+                        <if condition="'[[home]]' === 'true'">
+                          <span class="header__logo">VT-3000</span>
+
+                          <else>
+                            <a href="index.html" class="header__logo">VT-3000</a>
+                          </else>
+                        </if>
+
+                        <!-- Desktop menu -->
+                        <nav class="header__nav header__nav--desktop">
+                          <ul class="menu__list">
+
+                            <!-- Home -->
+                            <li>
+                              <a class="menu__link" href="/index.html">Home</a>
+                            </li>
+
+                            <!-- Work -->
+                            <li class="has-submenu">
+                              <a class="menu__link" href="/work.html">
+                                Work
+                                <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
+                              </a>
+
+                              <ul class="menu__sublist">
+                                <li>
+                                  <a href="/work-team.html">Team</a>
+                                </li>
+                                <li class="has-submenu">
+                                  <a href="/work-cases.html">Cases</a>
+                                  <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
+
+                                  <ul class="menu__sublist">
+                                    <li>
+                                      <a href="/work-cases.html">All cases</a>
+                                    </li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </li>
+
+                            <!-- Contacts -->
+                            <li class="has-submenu">
+                              <a class="menu__link" href="/contacts.html">
+                                Contacts
+                                <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
+                              </a>
+
+                              <ul class="menu__sublist">
+                                <li>
+                                  <a href="/contacts-support.html">Support</a>
+                                </li>
+                                <li>
+                                  <a href="/contacts-map.html">Map</a>
+                                </li>
+                              </ul>
+                            </li>
+
+                          </ul>
+                        </nav>
+
+                        <div class="header__actions">
+                          <button class="theme-toggle" data-theme-toggle>🌙</button>
+                          <button class="menu-toggle" type="button" data-ww-menu-open>
+                            <span class="menu-toggle__bar"></span>
+                          </button>
+                        </div>
+
+                        <include src="@components/layout/menu/menu.html" locals='{"active":"[[active]]"}'></include>
+                      </div>
+
+                    </header>
+                    END FILE
+                    10)Спостерігач:
+                    LINES: 1-32
+                    /* scripts/activity-watcher.js */
+                    import fs from "fs";
+                    import path from "path";
+
+                    const ROOT = process.cwd();
+                    const LOG = path.join(ROOT, ".vt-activity.log");
+
+                    const WATCH_DIRS = ["src", "scripts"];
+
+                    function log(entry) {
+                    fs.appendFileSync(LOG, JSON.stringify(entry) + "\n");
+                    }
+
+                    function watch(dir) {
+                    const full = path.join(ROOT, dir);
+                    if (!fs.existsSync(full)) return;
+
+                    fs.watch(full, { recursive: true }, (event, filename) => {
+                    if (!filename) return;
+                    if (filename.includes("node_modules")) return;
+
+                    log({
+                    ts: Date.now(),
+                    type: event,
+                    file: path.join(dir, filename),
+                    });
+                    });
+                    }
+
+                    WATCH_DIRS.forEach(watch);
+
+                    console.log("👀 VT-3000 activity watcher started");
+                    END FILE
+                    11) Файли стилів:
+                    a]/* src/styles/_vars.scss */
+                    @use "sass:math";
+                    /* ************************************************************************************ Налаштування
+                    стилів за
+                    промовчуванням) ************************************************************************************
+                    */
+                    /* Typography */
+                    $fontFamily: "Satoshi", system-ui, -apple-system, sans-serif;
+                    $fontSize: 16;
+
+                    // Основні кольори
+                    $darkColor: #111;
+                    $mainColor: #fff;
+
+                    /* ==================================================================================== Налаштування
+                    адаптивної сітки
+                    ==================================================================================== */
+                    /* Layout,мінімальна ширина сторінки */
+
+                    //Мінімальна ширина сторінки
+                    $minWidth: 320;
+                    //Максимальна ширина сторінки
+                    $maxWidth: 1920;
+                    //Ширина обмежуючого контейнера
+                    $maxWidthContainer: 1400;
+                    // Загальний горизонтальний відступ контейнера (left + right)
+                    $containerPadding: 30;
+
+                    // Половина для використання в padding-inline
+                    $containerPaddingSide: math.div($containerPadding, 2);
+
+                    // Ширина спрацювання першого breakpoint
+                    $containerWidth: $maxWidthContainer + $containerPadding;
+
+
+                    /* Breakpoints */
+                    $pc: $containerWidth; // ПК, ноутбуки, деякі планшети в горизонтальному положенні
+                    $tablet: 991.98; // Планшети, деякі телефони в горизонтальному положенні
+                    $mobile: 767.98; // Телефони L
+                    $mobileSmall: 479.98; // S
+
+                    // Тип адаптива:
+                    // 1 = чуйність (у контейнера немає брейкпоінтів),
+                    // 2 = по брейк-поінтах (контейнер змінює свою ширину по брейк-поінтах)
+                    $responsiveType: 1;
+
+                    @if ($responsiveType==1) {
+
+                    // Чуйна
+                    [class*="__container"] {
+                    @if ($maxWidthContainer>0) {
+                    max-width: #{$containerWidth}px;
+                    margin: 0 auto;
+                    }
+
+                    @if ($containerPadding>0) {
+                    @if ($maxWidthContainer>0) {
+                    padding-left: #{math.div($containerPadding, 2)}px;
+                    padding-right: #{math.div($containerPadding, 2)}px;
+                    }
+
+                    @else {
+                    @include adaptiveValue("padding-left", math.div($containerPadding, 2), 15);
+                    @include adaptiveValue("padding-right", math.div($containerPadding, 2), 15);
+                    }
+                    }
+                    }
+                    }
+
+                    @else {
+
+                    // Брейк-поінтами
+                    [class*="__container"] {
+                    margin: 0 auto;
+
+                    @if($maxWidthContainer>0) {
+                    max-width: #{$maxWidthContainer}px;
+                    }
+
+                    @else {
+                    @if ($containerPadding>0) {
+                    padding-left: #{math.div($containerPadding, 2)}px;
+                    padding-right: #{math.div($containerPadding, 2)}px;
+                    }
+                    }
+
+                    @media (max-width: toEm($pc)) {
+                    max-width: 970px;
+                    }
+
+                    @media (max-width: toEm($tablet)) {
+                    max-width: 750px;
+                    }
+
+                    @media (max-width: toEm($mobile)) {
+                    max-width: none;
+
+                    @if ($containerPadding>0 and $maxWidthContainer>0) {
+                    padding-left: #{math.div($containerPadding, 2)}px;
+                    padding-right: #{math.div($containerPadding, 2)}px;
+                    }
+                    }
+                    }
+                    }
+
+                    /* ************************************************************************************ Загальні
+                    стилі для всього сайту
+                    ************************************************************************************ */
+                    b]/* src/styles/base/_null.scss */
+                    @use "../vars" as *;
+
+                    *,
+                    *::before,
+                    *::after {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
+                    }
+
+                    *::before,
+                    *::after {
+                    display: inline-block;
+                    }
+
+                    /* Document */
+                    html,
+                    body {
+                    height: 100%;
+                    min-width: #{$minWidth}px;
+                    }
+
+                    html.lock,
+                    body.lock {
+                    overflow: hidden;
+                    }
+
+                    body {
+                    color: $darkColor;
+                    font-family: $fontFamily;
+                    font-size: #{$fontSize}px;
+                    background-color: $mainColor;
+                    }
+
+                    body {
+                    scrollbar-gutter: stable;
+                    //text-rendering: optimizeLegibility;
+                    -ms-text-size-adjust: 100%;
+                    -moz-text-size-adjust: 100%;
+                    -webkit-text-size-adjust: 100%;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                    }
+
+                    input,
+                    button,
+                    textarea {
+                    font-family: inherit;
+                    font-size: inherit;
+                    line-height: inherit;
+                    color: inherit;
+                    background-color: transparent;
+                    }
+
+                    input,
+                    textarea {
+                    width: 100%;
+                    }
+
+                    label {
+                    display: inline-block;
+                    }
+
+                    button,
+                    select,
+                    option {
+                    cursor: pointer;
+                    }
+
+                    /* Media */
+                    img,
+                    video {
+                    max-width: 100%;
+                    display: block;
+                    vertical-align: middle;
+                    }
+
+
+
+                    /* Links & lists */
+                    a {
+                    display: inline-block;
+                    color: inherit;
+                    text-decoration: none;
+                    }
+
+                    ul,
+                    li,
+                    ol {
+                    list-style: none;
+                    }
+
+                    h1,
+                    h2,
+                    h3,
+                    h4,
+                    h5,
+                    h6 {
+                    font-weight: inherit;
+                    font-size: inherit;
+                    }
+                    c]/* src\styles\base\_layout.scss */
+                    @use "sass:math";
+                    @use "../vars" as *;
+
+                    /* ============================
+                    WRAPPER
+                    ============================ */
+                    .wrapper {
+                    min-height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    }
+
+                    .wrapper>main {
+                    flex: 1 1 auto;
+                    }
+
+                    // Фікс для слайдерів
+                    .wrapper>* {
+                    min-width: 0;
+                    }
+
+                    /* ============================
+                    CONTAINERS
+                    ============================ */
+
+                    .container {
+                    width: 100%;
+                    max-width: #{$containerWidth}px;
+                    padding-inline: #{$containerPaddingSide}px;
+                    margin-inline: auto;
+                    }
+
+                    .container-fluid {
+                    width: 100%;
+                    padding-inline: #{$containerPadding}px;
+                    }
+
+                    /* ============================
+                    PAGE SECTIONS
+                    ============================ */
+
+                    $page-section-lg: 96px;
+                    $page-section-md: 72px;
+                    $page-section-sm: 48px;
+
+                    .page-section {
+                    padding-block: $page-section-lg;
+
+                    @media (max-width: 1024px) {
+                    padding-block: $page-section-md;
+                    }
+
+                    @media (max-width: 768px) {
+                    padding-block: $page-section-sm;
+                    }
+                    }
+
+                    .page-section--tight {
+                    padding-block: calc($page-section-sm * 0.75);
+                    }
+
+                    .page-section--wide {
+                    padding-block: calc($page-section-lg * 1.35);
+                    }
+
+                    /* ============================
+                    CONTENT WRAPPER
+                    ============================ */
+
+                    $content-narrow: 760px;
+                    $content-default: 960px;
+
+                    .content-wrap {
+                    max-width: $content-default;
+                    margin-inline: auto;
+                    }
+
+                    .content-wrap--narrow {
+                    max-width: $content-narrow;
+                    }
+
+                    .content-wrap--wide {
+                    max-width: none;
+                    }
+                    d]/* src/styles/style.scss */
+
+                    @use "./fonts";
+                    /* Core */
+                    @use "./vars";
+
+                    /* Mixins API */
+                    @use "./mixins/index" as *;
+
+                    /* Base */
+                    @use "./base/null";
+                    @use "./base/layout";
+                    @use "./base/themes";
+                    @use "./base/colors";
+                    @use "./base/effects";
+                    @use "./base/utilities";
+
+                    /* Project settings */
+                    @use "./settings";
+
+                    /* Dev only */
+                    @use "./dev";
+
+                    //========================================================================================================================================================
+                    1)Я хочу шаблон яким би можна верстати архітектуру для 100+ сторінок проекту.
+                    2)Дам тобі структуру шаблону! А ти скажеш як файли тобі ще скинути для того щоб ти зрозумів принцип
+                    роботи і видав пропозиції для покращення - оптимізації шаблона !?
+                    3) Запущу процес npm run build перед створенням структури шаблону а ти також проаналізуєш папку DIST
+                    ! І даш висновок також відносно файлу vite.config.js !?
+
+                    //========================================================================================================================================================
+                    1)Даю тобі повністю структуру шаблону(там є також папка dist):
+                    Folder PATH listing
+                    Volume serial number is 6CAD-DBB6
+                    C:.
+                    | .gitignore
+                    | .vt-activity.log
+                    | .vt-deadline.json
+                    | EXAMPLE.html
+                    | EXAMPLE.js
+                    | EXAMPLE.SCSS
+                    | package.json
+                    | README.md
+                    | README_ARCHITECTURE.md
+                    | structure.txt
+                    | template.config.js
+                    | vite.config.js
+                    |
+                    +---.vscode
+                    | fls.code-snippets
+                    | settings.json
+                    |
+                    +---backend
+                    | | README.md
+                    | |
+                    | \---php
+                    | +---api
+                    | | README.md
+                    | |
+                    | \---sendmail
+                    | README.md
+                    | sendmail.php
+                    |
+                    +---dist
+                    | | contacts-map.html
+                    | | contacts-support.html
+                    | | contacts.html
+                    | | index.html
+                    | | work-cases.html
+                    | | work-team.html
+                    | | work.html
+                    | |
+                    | +---assets
+                    | | +---fonts
+                    | | | Satoshi-Bold.woff2
+                    | | | Satoshi-Light.woff2
+                    | | | Satoshi-Medium.woff2
+                    | | | Satoshi-Regular.woff2
+                    | | |
+                    | | \---img
+                    | | | cover.jpg
+                    | | | cover.webp
+                    | | | sprite.svg
+                    | | |
+                    | | +---cover
+                    | | | cover-1200.webp
+                    | | | cover-600.webp
+                    | | | cover.webp
+                    | | |
+                    | | \---svgicons
+                    | | favicon.ico
+                    | | manifest.webmanifest
+                    | |
+                    | +---css
+                    | | app.DpXjxCbG.css
+                    | | comp-custom-aside.zYPL750c.css
+                    | | comp-custom-promo.VDp6qTyT.css
+                    | | comp-custom-test.BRvu3tyY.css
+                    | | comp-effects-cursor.uInAT9_K.css
+                    | | comp-effects-darklite.DwWyHfnN.css
+                    | | comp-effects-marquee.B08s1FQQ.css
+                    | | comp-effects-preloader.Bhu2wSlh.css
+                    | | comp-effects-ripple.BuZrpX95.css
+                    | | comp-forms-checkbox.CyM3BQgu.css
+                    | | comp-forms-form.qXQMZHY9.css
+                    | | comp-forms-input.D_RWifCQ.css
+                    | | comp-forms-quantity.Bt7vEncB.css
+                    | | comp-forms-radio.0ksMbQdU.css
+                    | | comp-forms-select.DbyPQke8.css
+                    | | comp-layout-beforeafter.bknEiNrB.css
+                    | | comp-layout-dev-pages.CCRy9svh.css
+                    | | comp-layout-digcounter.DBAYbm7a.css
+                    | | comp-layout-footer.Bg3eoYWG.css
+                    | | comp-layout-fullpage.s4H-Qyye.css
+                    | | comp-layout-gallery.dde2Iz2R.css
+                    | | comp-layout-header.PRhLMF9p.css
+                    | | comp-layout-mansory.WNptcH4a.css
+                    | | comp-layout-map.CXI6rqEH.css
+                    | | comp-layout-menu.CYH2dg1A.css
+                    | | comp-layout-overlay.DAfzer1n.css
+                    | | comp-layout-popup.YbfAZpQ7.css
+                    | | comp-layout-showmore.BRaCxS1F.css
+                    | | comp-layout-spollers.C3MxOrxK.css
+                    | | comp-layout-tabs.CM6iXMOt.css
+                    | | comp-pages-contacts-map.CatXUMDF.css
+                    | | comp-ui-theme-toggle.B3YzHF3I.css
+                    | | comp-ui-tooltip.DJg6Luek.css
+                    | | vendor.gfd675zr.css
+                    | |
+                    | \---js
+                    | app.CsYqjVGO.js
+                    | app.CsYqjVGO.js.map
+                    | comp-custom-aside.CoWkY9Lq.js
+                    | comp-custom-aside.CoWkY9Lq.js.map
+                    | comp-custom-promo.D2NAydIa.js
+                    | comp-custom-promo.D2NAydIa.js.map
+                    | comp-custom-test.c1UiL3us.js
+                    | comp-custom-test.c1UiL3us.js.map
+                    | comp-effects-cursor.7Nu0Dn59.js
+                    | comp-effects-cursor.7Nu0Dn59.js.map
+                    | comp-effects-darklite.DjDaK05v.js
+                    | comp-effects-darklite.DjDaK05v.js.map
+                    | comp-effects-marquee.BiRt3DQl.js
+                    | comp-effects-marquee.BiRt3DQl.js.map
+                    | comp-effects-preloader.BSCHZ-I5.js
+                    | comp-effects-preloader.BSCHZ-I5.js.map
+                    | comp-effects-ripple.DY3BKxgU.js
+                    | comp-effects-ripple.DY3BKxgU.js.map
+                    | comp-effects-scrollto-pro.CwWWJ5vG.js
+                    | comp-effects-scrollto-pro.CwWWJ5vG.js.map
+                    | comp-effects-scrollto.352yJ_tU.js
+                    | comp-effects-scrollto.352yJ_tU.js.map
+                    | comp-effects-watcher-pro.CcJyyJcR.js
+                    | comp-effects-watcher-pro.CcJyyJcR.js.map
+                    | comp-forms-checkbox.CBdHVuLc.js
+                    | comp-forms-checkbox.CBdHVuLc.js.map
+                    | comp-forms-form.Dmu7IZQ-.js
+                    | comp-forms-form.Dmu7IZQ-.js.map
+                    | comp-forms-input.CgsvRRlH.js
+                    | comp-forms-input.CgsvRRlH.js.map
+                    | comp-forms-quantity.dbFpidpm.js
+                    | comp-forms-quantity.dbFpidpm.js.map
+                    | comp-forms-radio.Rwf8Uj0i.js
+                    | comp-forms-radio.Rwf8Uj0i.js.map
+                    | comp-forms-range.DYMI1HUm.js
+                    | comp-forms-range.DYMI1HUm.js.map
+                    | comp-forms-rating.BLMXQGtR.js
+                    | comp-forms-rating.BLMXQGtR.js.map
+                    | comp-forms-select.CoIsplaM.js
+                    | comp-forms-select.CoIsplaM.js.map
+                    | comp-layout-beforeafter.BJCC04bD.js
+                    | comp-layout-beforeafter.BJCC04bD.js.map
+                    | comp-layout-dev-pages.0wEqrpAv.js
+                    | comp-layout-dev-pages.0wEqrpAv.js.map
+                    | comp-layout-digcounter.D0IJkWRo.js
+                    | comp-layout-digcounter.D0IJkWRo.js.map
+                    | comp-layout-dynamic.FaTYySvv.js
+                    | comp-layout-dynamic.FaTYySvv.js.map
+                    | comp-layout-footer.BlBC9tRM.js
+                    | comp-layout-footer.BlBC9tRM.js.map
+                    | comp-layout-fullpage.D-qd6NJ1.js
+                    | comp-layout-fullpage.D-qd6NJ1.js.map
+                    | comp-layout-gallery.woAM9w46.js
+                    | comp-layout-gallery.woAM9w46.js.map
+                    | comp-layout-header.BPWOoD07.js
+                    | comp-layout-header.BPWOoD07.js.map
+                    | comp-layout-mansory.feh9eT1j.js
+                    | comp-layout-mansory.feh9eT1j.js.map
+                    | comp-layout-map.DHmBFM8K.js
+                    | comp-layout-map.DHmBFM8K.js.map
+                    | comp-layout-menu.Fm-aq750.js
+                    | comp-layout-menu.Fm-aq750.js.map
+                    | comp-layout-overlay.B_vGPnsO.js
+                    | comp-layout-overlay.B_vGPnsO.js.map
+                    | comp-layout-pagging.DRTGyN46.js
+                    | comp-layout-pagging.DRTGyN46.js.map
+                    | comp-layout-popup.Cwf5_LS-.js
+                    | comp-layout-popup.Cwf5_LS-.js.map
+                    | comp-layout-showmore.CRquZ5Ve.js
+                    | comp-layout-showmore.CRquZ5Ve.js.map
+                    | comp-layout-spollers.CEO8jiyu.js
+                    | comp-layout-spollers.CEO8jiyu.js.map
+                    | comp-layout-swiper.BWEvKBxg.js
+                    | comp-layout-swiper.BWEvKBxg.js.map
+                    | comp-layout-tabs.BUnx61y8.js
+                    | comp-layout-tabs.BUnx61y8.js.map
+                    | comp-pages-contacts.CtCc08zr.js
+                    | comp-pages-contacts.CtCc08zr.js.map
+                    | comp-pages-dev-root.BJtM-cWC.js
+                    | comp-pages-dev-root.BJtM-cWC.js.map
+                    | comp-pages-home.CeGkG4Ou.js
+                    | comp-pages-home.CeGkG4Ou.js.map
+                    | comp-pages-index.EjJZkHog.js
+                    | comp-pages-index.EjJZkHog.js.map
+                    | comp-ui-theme-toggle.BIeOX-1W.js
+                    | comp-ui-theme-toggle.BIeOX-1W.js.map
+                    | comp-ui-tooltip.BxuVOIkl.js
+                    | comp-ui-tooltip.BxuVOIkl.js.map
+                    | contacts-map.10SDY1ce.js.map
+                    | contacts-support.BPIJlDeK.js.map
+                    | contacts.D24Y7c7n.js.map
+                    | index.CXVaVuX1.js.map
+                    | vendor.W7i4UVcE.js
+                    | vendor.W7i4UVcE.js.map
+                    | work-cases.krLv2dpK.js.map
+                    | work-team.Dc8Ijn7o.js.map
+                    | work.84ntpDYQ.js.map
+                    |
+                    +---public
+                    | | android-chrome-144x144.png
+                    | | android-chrome-192x192.png
+                    | | android-chrome-256x256.png
+                    | | android-chrome-36x36.png
+                    | | android-chrome-384x384.png
+                    | | android-chrome-48x48.png
+                    | | android-chrome-512x512.png
+                    | | android-chrome-72x72.png
+                    | | android-chrome-96x96.png
+                    | | apple-touch-icon-1024x1024.png
+                    | | apple-touch-icon-114x114.png
+                    | | apple-touch-icon-120x120.png
+                    | | apple-touch-icon-144x144.png
+                    | | apple-touch-icon-152x152.png
+                    | | apple-touch-icon-167x167.png
+                    | | apple-touch-icon-180x180.png
+                    | | apple-touch-icon-57x57.png
+                    | | apple-touch-icon-60x60.png
+                    | | apple-touch-icon-72x72.png
+                    | | apple-touch-icon-76x76.png
+                    | | apple-touch-icon-precomposed.png
+                    | | apple-touch-icon.png
+                    | | favicon-16x16.png
+                    | | favicon-32x32.png
+                    | | favicon-48x48.png
+                    | | favicon.ico
+                    | | manifest.webmanifest
+                    | |
+                    | \---assets
+                    | | sprite.svg
+                    | |
+                    | \---img
+                    | \---cover
+                    | cover-1200.webp
+                    | cover-600.webp
+                    | cover.webp
+                    | test-auto.png
+                    |
+                    +---scripts
+                    | activity-watcher.js
+                    | add-component.js
+                    | break-reminder.js
+                    | build-dev-pages.js
+                    | build-favicons.js
+                    | build-fonts.js
+                    | build-images.js
+                    | build-preload.js
+                    | build-svg-sprite.js
+                    | build-zip.js
+                    | clean-svg.js
+                    | create-page.js
+                    | html-include-plugin.js
+                    | layout-engine.js
+                    | online.js
+                    | posthtml-engine.js
+                    | projectpage.js
+                    | stat-build.js
+                    | stat.js
+                    |
+                    \---src
+                    | contacts-map.html
+                    | contacts-support.html
+                    | contacts.html
+                    | dev-root.html
+                    | index.html
+                    | work-cases.html
+                    | work-team.html
+                    | work.html
+                    |
+                    +---assets
+                    | | sprite.svg
+                    | |
+                    | +---data
+                    | | menu.docs.json
+                    | | menu.json
+                    | | menu.main.json
+                    | | menu.shop.json
+                    | |
+                    | +---files
+                    | +---fonts
+                    | | Satoshi-Bold.woff2
+                    | | Satoshi-Light.woff2
+                    | | Satoshi-Medium.woff2
+                    | | Satoshi-Regular.woff2
+                    | |
+                    | +---img
+                    | | cover.jpg
+                    | | cover.webp
+                    | | logo.svg
+                    | |
+                    | +---svgicons
+                    | | arrow-down.svg
+                    | | arrow-up.svg
+                    | | btn-right-black.svg
+                    | | btn-right.svg
+                    | | control-left.svg
+                    | | control-right.svg
+                    | | favicon.png
+                    | | favicon.svg
+                    | | footer-icon.svg
+                    | | heart-line.svg
+                    | | heart.svg
+                    | | id-card-line.svg
+                    | | logo.svg
+                    | | search-line.svg
+                    | | search.svg
+                    | | social-01.svg
+                    | | social-02.svg
+                    | | social-03.svg
+                    | | social-04.svg
+                    | | user-star-line.svg
+                    | | user.svg
+                    | | website.svg
+                    | |
+                    | \---video
+                    +---components
+                    | +---custom
+                    | | +---aside
+                    | | | aside.html
+                    | | | aside.js
+                    | | | aside.scss
+                    | | |
+                    | | +---promo
+                    | | | promo.html
+                    | | | promo.js
+                    | | | promo.scss
+                    | | |
+                    | | \---test
+                    | | test.html
+                    | | test.js
+                    | | test.json
+                    | | test.scss
+                    | |
+                    | +---dev
+                    | | button-preview.html
+                    | | checkbox-preview.html
+                    | | colors-preview.html
+                    | | da-preview.html
+                    | | focus-preview.html
+                    | | footer-preview.html
+                    | | fullpage-preview.html
+                    | | gallery-preview.html
+                    | | grid-container-preview.html
+                    | | header-preview.html
+                    | | hover-preview.html
+                    | | icons-preview.html
+                    | | layout-core.html
+                    | | layout-grid-preview.html
+                    | | loader-preview.html
+                    | | mansory-preview.html
+                    | | pages-list.html
+                    | | pagging-preview.html
+                    | | quantity-preview.html
+                    | | radio-preview.html
+                    | | range-preview.html
+                    | | rating-preview.html
+                    | | ripple-preview.html
+                    | | scrollto-pro.html
+                    | | section-preview.html
+                    | | select-preview.html
+                    | | showmore-preview.html
+                    | | skeleton-preview.html
+                    | | spollers-preview.html
+                    | | swiper-preview.html
+                    | | tabs-preview.html
+                    | | theme-preview.html
+                    | | watcher-pro.html
+                    | |
+                    | +---effects
+                    | | +---cursor
+                    | | | cursor.js
+                    | | | cursor.scss
+                    | | |
+                    | | +---darklite
+                    | | | darklite.js
+                    | | | darklite.scss
+                    | | |
+                    | | +---gsap
+                    | | +---marquee
+                    | | | marquee.html
+                    | | | marquee.js
+                    | | | marquee.scss
+                    | | |
+                    | | +---mouse
+                    | | +---parallax
+                    | | +---preloader
+                    | | | preloader.html
+                    | | | preloader.js
+                    | | | preloader.scss
+                    | | |
+                    | | +---ripple
+                    | | | ripple.js
+                    | | | ripple.scss
+                    | | |
+                    | | +---screenshot
+                    | | +---scrollto
+                    | | | scrollto.html
+                    | | | scrollto.js
+                    | | |
+                    | | +---scrollto-pro
+                    | | | scrollto-pro.html
+                    | | | scrollto-pro.js
+                    | | |
+                    | | +---splittype
+                    | | +---tippy
+                    | | \---watcher-pro
+                    | | watcher-pro.js
+                    | |
+                    | +---forms
+                    | | +---button
+                    | | | button.scss
+                    | | |
+                    | | +---checkbox
+                    | | | checkbox.html
+                    | | | checkbox.js
+                    | | | checkbox.scss
+                    | | |
+                    | | +---datepicker
+                    | | +---form
+                    | | | form.html
+                    | | | form.js
+                    | | | form.scss
+                    | | | validation.js
+                    | | |
+                    | | +---input
+                    | | | input.html
+                    | | | input.js
+                    | | | input.scss
+                    | | |
+                    | | +---quantity
+                    | | | quantity.html
+                    | | | quantity.js
+                    | | | quantity.scss
+                    | | |
+                    | | +---radio
+                    | | | radio.html
+                    | | | radio.js
+                    | | | radio.scss
+                    | | |
+                    | | +---range
+                    | | | range.html
+                    | | | range.js
+                    | | | range.scss
+                    | | |
+                    | | +---rating
+                    | | | rating.html
+                    | | | rating.js
+                    | | | rating.scss
+                    | | |
+                    | | +---select
+                    | | | select.html
+                    | | | select.js
+                    | | | select.scss
+                    | | |
+                    | | \---skeleton
+                    | | skeleton.scss
+                    | |
+                    | +---layout
+                    | | +---beforeafter
+                    | | | beforeafter.html
+                    | | | beforeafter.js
+                    | | | beforeafter.scss
+                    | | |
+                    | | +---dev-pages
+                    | | | dev-pages.html
+                    | | | dev-pages.js
+                    | | | dev-pages.scss
+                    | | |
+                    | | +---digcounter
+                    | | | digcounter.html
+                    | | | digcounter.js
+                    | | | digcounter.scss
+                    | | |
+                    | | +---dynamic
+                    | | | dynamic.js
+                    | | | dynamic.scss
+                    | | |
+                    | | +---favicons
+                    | | | favicons.html
+                    | | |
+                    | | +---footer
+                    | | | footer.html
+                    | | | footer.js
+                    | | | footer.scss
+                    | | |
+                    | | +---fullpage
+                    | | | fullpage.html
+                    | | | fullpage.js
+                    | | | fullpage.scss
+                    | | |
+                    | | +---gallery
+                    | | | gallery.html
+                    | | | gallery.js
+                    | | | gallery.scss
+                    | | |
+                    | | +---grid-container
+                    | | | grid-container.html
+                    | | | grid-container.scss
+                    | | |
+                    | | +---head
+                    | | | head.html
+                    | | | meta.html
+                    | | | preload.html
+                    | | | scripts.html
+                    | | |
+                    | | +---header
+                    | | | header-js.html
+                    | | | header.html
+                    | | | header.js
+                    | | | header.scss
+                    | | |
+                    | | +---mansory
+                    | | | mansory.html
+                    | | | mansory.js
+                    | | | mansory.scss
+                    | | |
+                    | | +---map
+                    | | | map.js
+                    | | | map.scss
+                    | | |
+                    | | +---menu
+                    | | | menu.dynamic.html
+                    | | | menu.html
+                    | | | menu.js
+                    | | | menu.render.js
+                    | | | menu.scss
+                    | | | menu.simple.html
+                    | | | menu.static.html
+                    | | |
+                    | | +---overlay
+                    | | | overlay.html
+                    | | | overlay.js
+                    | | | overlay.scss
+                    | | |
+                    | | +---pagging
+                    | | | pagging.html
+                    | | | pagging.js
+                    | | | pagging.scss
+                    | | |
+                    | | +---popup
+                    | | | popup.html
+                    | | | popup.js
+                    | | | popup.scss
+                    | | |
+                    | | +---showmore
+                    | | | showmore.html
+                    | | | showmore.js
+                    | | | showmore.scss
+                    | | |
+                    | | +---slider
+                    | | +---spollers
+                    | | | spollers.html
+                    | | | spollers.js
+                    | | | spollers.scss
+                    | | |
+                    | | +---swiper
+                    | | | swiper.html
+                    | | | swiper.js
+                    | | | swiper.scss
+                    | | |
+                    | | \---tabs
+                    | | tabs.html
+                    | | tabs.js
+                    | | tabs.scss
+                    | |
+                    | +---other
+                    | | \---components
+                    | | components.html
+                    | |
+                    | +---pages
+                    | | +---contacts
+                    | | | contacts.html
+                    | | | contacts.js
+                    | | | contacts.scss
+                    | | |
+                    | | +---contacts-map
+                    | | | contacts-map.html
+                    | | | contacts-map.js
+                    | | | contacts-map.scss
+                    | | |
+                    | | +---contacts-support
+                    | | | contacts-support.html
+                    | | | contacts-support.js
+                    | | | contacts-support.scss
+                    | | |
+                    | | +---dev-root
+                    | | | dev-root.js
+                    | | |
+                    | | +---home
+                    | | | home.html
+                    | | | home.js
+                    | | | home.scss
+                    | | |
+                    | | +---index
+                    | | | index.js
+                    | | |
+                    | | +---work
+                    | | | work.html
+                    | | | work.js
+                    | | | work.scss
+                    | | |
+                    | | +---work-cases
+                    | | | work-cases.html
+                    | | | work-cases.js
+                    | | | work-cases.scss
+                    | | |
+                    | | \---work-team
+                    | | work-team.html
+                    | | work-team.js
+                    | | work-team.scss
+                    | |
+                    | +---templates
+                    | | +---dev
+                    | | | dev.html
+                    | | |
+                    | | +---inner
+                    | | | inner.html
+                    | | | inner.js
+                    | | | inner.scss
+                    | | |
+                    | | +---main
+                    | | | main.html
+                    | | | main.js
+                    | | | main.scss
+                    | | |
+                    | | \---projectpage
+                    | | projectpage.html
+                    | |
+                    | +---ui
+                    | | +---loader
+                    | | | loader.scss
+                    | | |
+                    | | +---theme-toggle
+                    | | | theme-toggle.html
+                    | | | theme-toggle.js
+                    | | | theme-toggle.scss
+                    | | |
+                    | | \---tooltip
+                    | | tooltip.js
+                    | | tooltip.scss
+                    | |
+                    | \---wordpress
+                    +---copy
+                    | | contacts-map.html
+                    | | contacts-support.html
+                    | | contacts.html
+                    | | index.html
+                    | | work-cases.html
+                    | | work-team.html
+                    | | work.html
+                    | |
+                    | +---contacts
+                    | | contacts.html
+                    | | contacts.js
+                    | | contacts.scss
+                    | |
+                    | +---contacts-map
+                    | | contacts-map.html
+                    | | contacts-map.js
+                    | | contacts-map.scss
+                    | |
+                    | +---contacts-support
+                    | | contacts-support.html
+                    | | contacts-support.js
+                    | | contacts-support.scss
+                    | |
+                    | +---index
+                    | | index.js
+                    | |
+                    | +---work
+                    | | work.html
+                    | | work.js
+                    | | work.scss
+                    | |
+                    | +---work-cases
+                    | | work-cases.html
+                    | | work-cases.js
+                    | | work-cases.scss
+                    | |
+                    | \---work-team
+                    | work-team.html
+                    | work-team.js
+                    | work-team.scss
+                    |
+                    +---entries
+                    | page.contacts-map.js
+                    | page.contacts-support.js
+                    | page.contacts.js
+                    | page.index.js
+                    | page.work-cases.js
+                    | page.work-team.js
+                    | page.work.js
+                    |
+                    +---js
+                    | | app.js
+                    | | asset-entry.js
+                    | | dev-icons.js
+                    | | modulesLoader.js
+                    | |
+                    | +---frameworks
+                    | | +---react
+                    | | \---vue
+                    | +---productivity
+                    | | break-reminder.js
+                    | |
+                    | +---services
+                    | | body.js
+                    | | events.js
+                    | | focus.js
+                    | | gsap.js
+                    | | keyboard.js
+                    | | logger.js
+                    | | media.js
+                    | | scroll.js
+                    | | splittype.js
+                    | | theme.js
+                    | |
+                    | \---utils
+                    | body-lock.js
+                    | debounce.js
+                    | dom.js
+                    | index.js
+                    | render-template.js
+                    | slide.js
+                    | throttle.js
+                    |
+                    +---pug
+                    | \---components
+                    \---styles
+                    | dev.scss
+                    | settings.scss
+                    | style.scss
+                    | _fonts.scss
+                    | _vars.scss
+                    |
+                    +---base
+                    | _colors.scss
+                    | _effects.scss
+                    | _layout.scss
+                    | _null.scss
+                    | _themes.scss
+                    | _utilities.scss
+                    |
+                    +---includes
+                    | mix.scss
+                    |
+                    +---mixins
+                    | _adaptive.scss
+                    | _content.scss
+                    | _index.scss
+                    | _layout.scss
+                    | _media.scss
+                    | _units.scss
+                    |
+                    \---utilities
+                    ripple.scss
+                    _focus.scss
+                    _hover.scss
+                    2)Тут весь код головної сторінки(inex.html == home.html):
+                    <!-- src\components\pages\home\home.html -->
+                    <main class="page page--home">
+                      <div class="page__container">
+                        <h1>HOME PAGE</h1>
+
+                        <div class="tabs" data-ww-tabs>
+                          <div class="tabs__header">
+                            <button data-ww-tabs-title class="is-active">Tab 1</button>
+                            <button data-ww-tabs-title>Tab 2</button>
+                            <button data-ww-tabs-title>Tab 3</button>
+                          </div>
+
+                          <div class="tabs__body">
+                            <div data-ww-tabs-panel class="is-active">
+                              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus rerum error corrupti earum
+                              consequuntur. Culpa
+                              modi ipsam fugit, amet sit distinctio voluptates?
+                            </div>
+
+                            <div data-ww-tabs-panel>
+                              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perspiciatis sequi ea impedit
+                              totam suscipit commodi
+                              hic iste vel, unde dolore, numquam necessitatibus temporibus voluptates fuga at ipsa
+                              laborum! Quae qui
+                              explicabo
+                              incidunt nostrum ipsa nihil quia nemo amet. Deleniti aspernatur ipsa odit obcaecati
+                              doloribus!
+                            </div>
+                            <div data-ww-tabs-panel>
+                              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Necessitatibus blanditiis, vitae
+                              voluptas
+                              consequuntur
+                              hic ratione, sint eveniet, cumque atque quo perferendis facere.
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="spollers" data-ww-spollers data-ww-spollers-one data-ww-spollers-close-outside>
+                          <div class="spollers__item">
+                            <button class="spollers__title" type="button">
+                              Spoller #1
+                            </button>
+                            <div class="spollers__body">
+                              Контент першого спойлера
+                            </div>
+                          </div>
+
+                          <div class="spollers__item">
+                            <button class="spollers__title" type="button">
+                              Spoller #2
+                            </button>
+                            <div class="spollers__body">
+                              Контент другого спойлера
+                            </div>
+                          </div>
+
+                          <div class="spollers__item">
+                            <button class="spollers__title" type="button">
+                              Spoller #3
+                            </button>
+                            <div class="spollers__body">
+                              Контент третього спойлера
+                            </div>
+                          </div>
+                        </div>
+
+                        <h2>Showmore — size mode</h2>
+
+                        <div class="showmore" data-ww-showmore="size" data-ww-showmore-content="180" data-ww-showmore>
+                          <div class="showmore__content" data-ww-showmore-content>
+                            Lorem ipsum dolor sit, amet consectetur adipisicing elit. At corrupti aliquam nisi amet
+                            numquam, dolorem rem
+                            quod
+                            id aliquid necessitatibus impedit asperiores aperiam praesentium non, rerum provident earum
+                            minima accusantium
+                            atque! Ratione, quasi? Dolore enim assumenda sequi maxime architecto ut, dicta doloribus
+                            quod asperiores
+                            repudiandae optio autem in facere quidem aut atque maiores totam dolor placeat omnis numquam
+                            rem esse adipisci
+                            nemo? Ipsam magnam alias molestias neque omnis facilis, incidunt voluptas libero error id,
+                            architecto nam
+                            tempore
+                            doloremque repellendus soluta itaque exercitationem, voluptatibus expedita! Aperiam, nobis
+                            magni animi
+                            reiciendis
+                            repudiandae esse culpa tempora sed cupiditate ipsam rem accusamus sapiente saepe.
+                          </div>
+
+                          <button class="showmore__btn" data-ww-showmore-btn>
+                            <span class="showmore__more">Показати більше</span>
+                            <span class="showmore__less">Згорнути</span>
+                          </button>
+                        </div>
+
+                        <h2>Showmore — items mode</h2>
+
+                        <div class="showmore" data-ww-showmore="items" data-ww-showmore-content="3" data-ww-showmore>
+                          <ul class="showmore__content" data-ww-showmore-content>
+                            <li>Елемент 1</li>
+                            <li>Елемент 2</li>
+                            <li>Елемент 3</li>
+                            <li>Елемент 4</li>
+                            <li>Елемент 5</li>
+                          </ul>
+
+                          <button class="showmore__btn" data-ww-showmore-btn>
+                            <span class="showmore__more">Показати більше</span>
+                            <span class="showmore__less">Згорнути</span>
+                          </button>
+                        </div>
+
+
+
+
+                        <div data-ww-popup>
+
+                          <!-- Popup trigger -->
+                          <button class="btn btn-popup" type="button" data-popup-open="popup-product">
+                            Open popup
+                          </button>
+
+                          <!-- Popup -->
+                          <div class="popup" id="popup-product" aria-hidden="true" role="dialog" aria-modal="true">
+                            <div class="popup__overlay" data-popup-close></div>
+
+                            <div class="popup__content" role="document">
+                              <button class="popup__close" type="button" aria-label="Close popup" data-popup-close>
+                                ×
+                              </button>
+
+                              hello everybody !!
+                            </div>
+                          </div>
+
+                        </div>
+
+
+                        <!-- <div data-ww-watch style="margin-top:100vh">
+                        WATCHER WORKS 🚀
+                      </div> -->
+
+
+                        <form class="form" data-ww-form novalidate>
+                          <div class="form__field">
+                            <label class="form__label" for="name">Name</label>
+                            <input class="form__input" type="text" id="name" name="name" required data-ww-input
+                              data-ww-validate="required" />
+                            <span class="form__error" aria-live="polite"></span>
+                          </div>
+
+                          <div class="form__field">
+                            <label class="form__label" for="email">Email</label>
+                            <input class="form__input" type="email" id="email" name="email" required data-ww-input
+                              data-ww-validate="required|email" />
+                            <span class="form__error" aria-live="polite"></span>
+                          </div>
+
+                          <div class="form__field">
+                            <label class="form__label" for="company">Company</label>
+                            <input class="form__input" type="text" id="company" name="company" data-ww-input />
+                            <span class="form__error" aria-live="polite"></span>
+                          </div>
+
+                          <div class="form__field">
+                            <label class="form__label" for="phone">Phone</label>
+                            <input class="form__input" type="tel" id="phone" name="phone" data-ww-input
+                              data-ww-validate="required" />
+                            <span class="form__error" aria-live="polite"></span>
+                          </div>
+
+                          <div class="form__field">
+                            <label class="form__label" for="message">Message</label>
+                            <input class="form__input" type="text" id="message" name="message" required data-ww-input
+                              data-ww-validate="required" />
+                            <span class="form__error" aria-live="polite"></span>
+                          </div>
+
+                          <button class="form__submit btn btn-form" type="submit">
+                            Send
+                          </button>
+                        </form>
+
+                        <div class="home-nav">
+                          <button data-ww-scrollto=".spollers" data-ww-header>
+                            Перейти до спойлерів
+                          </button>
+
+                          <button data-ww-scrollto=".showmore" data-ww-offset="100">
+                            Перейти до Showmore
+                          </button>
+
+                          <button data-ww-scrollto=".form" data-ww-header>
+                            Перейти до форми
+                          </button>
+                        </div>
+
+
+                        <div data-wwc-test='{
+                      "title":"My Portfolio Project",
+                      "text":"Preview section rendered via VT-3000 templater",
+                      "image":"/assets/img/cover.jpg"
+                    }'></div>
+
+
+
+
+                        <picture>
+                          <source srcset="/assets/img/cover/cover-600.webp 600w,
+                                /assets/img/cover/cover-1200.webp 1200w" type="image/webp">
+                          <img src="/assets/img/cover/cover.webp" alt="Cover" loading="lazy">
+                        </picture>
+                        <div data-ww-map data-lat="50.4501" data-lng="30.5234" data-zoom="13">
+
+                          <div data-map-marker data-lat="50.4512" data-lng="30.5250" data-icon="/assets/img/marker.svg">
+                          </div>
+
+                          <div class="map__canvas"></div>
+                        </div>
+
+
+                        <div data-ww-marquee data-group="demo" data-direction="left" data-gap="24">
+                          <div class="marquee__inner">
+                            <div class="marquee__item">Left Sync</div>
+                          </div>
+                        </div>
+
+                        <div data-ww-marquee data-group="demo" data-direction="right" data-start="1">
+                          <div class="marquee__inner">
+                            <div class="marquee__item">Right Sync</div>
+                          </div>
+                        </div>
+
+
+                        <div data-wwc-aside></div>
+                        <div data-wwc-promo></div>
+
+                        <svg class="icon icon--search">
+                          <use href="#icon-search"></use>
+                        </svg>
+
+
+                        <svg class="icon icon--user">
+                          <use href="#icon-user"></use>
+                        </svg>
+
+                        <svg class="icon icon--heart" aria-hidden="true">
+                          <use href="/assets/sprite.svg#icon-heart"></use>
+                        </svg>
+
+                        <div class="test-source">
+                          <div class="box" data-da=".test-target, 768, first">
+                            🔥 Я маю переїхати на мобілці
+                          </div>
+                        </div>
+
+                        <div class="test-target" style="margin-top:20px; padding:10px; border:2px dashed red;">
+                          TARGET
+                        </div>
+                      </div>
+
+                    </main>
+                    Ще додатково для розуміння:
+                    a]
+                    /* src\components\pages\index\index.js */
+                    // index page = home page
+                    import "../home/home.js";
+                    b]
+                    /* src\components\pages\home\home.js */
+                    import "./home.scss";
+
+                    console.log("HOME JS");
+                    c]
+                    /* src\components\pages\home\home.scss */
+                    файл пустий ! стилі в кожному компоненті !
+
+
+                    3)
+                    a]
+                    /* src\components\ui\theme-toggle\theme-toggle.js */
+                    import "./theme-toggle.scss";
+
+                    import { getTheme, toggleTheme } from "@js/services/theme.js";
+
+                    export function init(root = document) {
+                    const buttons = root.querySelectorAll("[data-theme-toggle]");
+                    if (!buttons.length) return;
+
+                    const updateIcon = () => {
+                    const theme = getTheme();
+                    buttons.forEach((btn) => {
+                    btn.textContent = theme === "dark" ? "☀️" : "🌙";
+                    btn.setAttribute(
+                    "aria-label",
+                    theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
+                    );
+                    });
+                    };
+
+                    buttons.forEach((btn) => {
+                    btn.addEventListener("click", () => {
+                    toggleTheme();
+                    updateIcon();
+                    });
+                    });
+
+                    updateIcon();
+                    }
+                    b]
+                    /* src/components/ui/theme-toggle/theme-toggle.scss */
+
+                    [data-theme-toggle] {
+                    background: none;
+                    border: 1px solid currentColor;
+                    border-radius: 999px;
+                    padding: 6px 10px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    line-height: 1;
+                    transition: background 0.2s, color 0.2s;
+
+                    &:hover {
+                    background: rgba(0, 0, 0, 0.05);
+                    }
+
+                    [data-theme="dark"] & {
+                    &:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    }
+                    }
+                    }
+                    c]
+                    <!-- ←←← src\components\ui\theme-toggle\theme-toggle.html →→→ --> файл пустий !
+
+                    4)Файл логіки меню:
+                    /* src/components/layout/menu/menu.js */
+
+                    import "./menu.scss";
+                    import { renderMenu } from "./menu.render.js";
+                    import { isEscape } from "@js/services/keyboard.js";
+
+                    let menu;
+                    let openBtn;
+                    let closeBtn;
+                    let overlay;
+                    let isOpen = false;
+
+                    /* =========================
+                    ACTIVE LINK (ПІСЛЯ render)
+                    ========================= */
+                    function highlightActiveLinks() {
+                    const currentPath = window.location.pathname;
+
+                    document.querySelectorAll(".menu__link").forEach((link) => {
+                    const linkPath = new URL(link.href, window.location.origin).pathname;
+
+                    if (linkPath === currentPath) {
+                    link.classList.add("menu__link--active");
+
+                    const parentItem = link.closest(".has-submenu");
+                    parentItem
+                    ?.querySelector(":scope > .menu__link")
+                    ?.classList.add("menu__link--active");
+                    }
+                    });
+                    }
+
+                    /* =========================
+                    BODY LOCK
+                    ========================= */
+                    function lockBody() {
+                    document.documentElement.classList.add("body-locked");
+                    document.body.classList.add("body-locked");
+                    }
+
+                    function unlockBody() {
+                    document.documentElement.classList.remove("body-locked");
+                    document.body.classList.remove("body-locked");
+                    }
+
+                    /* =========================
+                    SUBMENUS
+                    ========================= */
+                    function closeAllSubmenus(root = document) {
+                    root.querySelectorAll(".has-submenu.is-open").forEach((item) => {
+                    item.classList.remove("is-open");
+                    });
+                    }
+
+                    function initSubmenus(root = document) {
+                    root.querySelectorAll(".menu__arrow").forEach((btn) => {
+                    btn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const item = btn.closest(".has-submenu");
+                    if (!item) return;
+
+                    item.classList.toggle("is-open");
+                    });
+                    });
+                    }
+
+                    /* =========================
+                    OFFCANVAS
+                    ========================= */
+                    function openMenu() {
+                    if (isOpen) return;
+                    isOpen = true;
+
+                    menu.classList.add("is-open");
+                    overlay.classList.add("is-active");
+                    openBtn.classList.add("is-active");
+
+                    menu.setAttribute("aria-hidden", "false");
+                    openBtn.setAttribute("aria-expanded", "true");
+
+                    lockBody();
+                    }
+
+                    function closeMenu() {
+                    if (!isOpen) return;
+                    isOpen = false;
+
+                    menu.classList.remove("is-open");
+                    overlay.classList.remove("is-active");
+                    openBtn.classList.remove("is-active");
+
+                    menu.setAttribute("aria-hidden", "true");
+                    openBtn.setAttribute("aria-expanded", "false");
+
+                    closeAllSubmenus(menu);
+                    unlockBody();
+                    }
+
+                    /* =========================
+                    INIT
+                    ========================= */
+                    export function init() {
+                    // 1️⃣ Будуємо DOM з JSON
+                    renderMenu();
+
+                    // 2️⃣ Після рендеру — підсвічуємо активний пункт
+                    highlightActiveLinks();
+
+                    // 3️⃣ Беремо DOM
+                    menu = document.querySelector("[data-ww-menu]");
+                    overlay = document.querySelector("[data-ww-overlay]");
+                    openBtn = document.querySelector("[data-ww-menu-open]");
+                    closeBtn = document.querySelector("[data-ww-menu-close]");
+
+                    if (!menu || !openBtn || !overlay) return;
+
+                    openBtn.addEventListener("click", openMenu);
+                    closeBtn?.addEventListener("click", closeMenu);
+                    overlay.addEventListener("click", closeMenu);
+
+                    document.addEventListener("keydown", (e) => {
+                    if (!isEscape(e)) return;
+                    closeAllSubmenus(document);
+                    if (isOpen) closeMenu();
+                    });
+
+                    document.addEventListener("pointerdown", (e) => {
+                    if (!e.target.closest(".has-submenu")) {
+                    closeAllSubmenus(document);
+                    }
+                    });
+
+                    initSubmenus(menu);
+                    initSubmenus(document.querySelector(".header__nav"));
+
+                    console.log("[MENU] initialized correctly");
+                    }
+                    Він працює в парі з файлом menu.render.js ЯКЩО ТРЕБА побудувати багаторівневе меню через
+                    JSON(src\assets\data--заготовки) або
+                    ul/li! А якщо не треба
+                    то просто закоментовую рядок:
+                    import { renderMenu } from "./menu.render.js";
+                    і будую наприклад так:
+                    <!-- Menu -->
+                    <!-- src\components\layout\menu\menu.html -->
+                    <div class="header__menu menu" data-ww-menu aria-hidden="true">
+                      <button class="menu__icon icon-menu" type="button" data-ww-menu-open
+                        aria-expanded="false"><span></span></button>
+                      <nav class="menu__body">
+
+                        <ul class="menu__list">
+                          <each loop='item in [
+                                    {"id":"Services","href":"/index.html","label":"Services"},
+                                    {"id":"Work","href":"/work.html","label":"Work"},
+                                    {"id":"About","href":"/about.html","label":"About"},
+                                    {"id":"Blog","href":"/blog.html","label":"Blog"},
+                                    {"id":"Pages","href":"/pages.html","label":"Pages"}
+                                  ]'>
+
+                            <if condition="'[[active]]' === '[[item.id]]'">
+                              <li class="menu__item">
+                                <a href="[[item.href]]" class="menu__link menu__link--active">
+                                  [[item.label]]
+                                </a>
+                              </li>
+                              <else>
+                                <li class="menu__item">
+                                  <a href="[[item.href]]" class="menu__link">
+                                    [[item.label]]
+                                  </a>
+                                </li>
+                              </else>
+                            </if>
+                          </each>
+                        </ul>
+                      </nav>
+
+                    </div>
+
+                    <div class="overlay" data-ww-overlay hidden></div>
+
+                    5)
+                    a]
+                    /* src\js\asset-entry.js */
+
+                    // 🔤 Fonts — реєструємо всі файли
+                    import.meta.glob("../assets/fonts/**/*.{woff,woff2,ttf,otf}", {
+                    eager: true,
+                    });
+
+                    // 🖼 Images
+                    import.meta.glob("../assets/img/**/*", {
+                    eager: true,
+                    });
+
+                    // 🧩 SVG sprite
+                    import "../assets/sprite.svg";
+                    b]
+                    /* src\js\services\logger.js */
+
+                    const IS_DEV = import.meta.env.DEV;
+
+                    /* ==========================
+                    ASCII BANNER
+                    ========================== */
+                    const BANNER = `
+                    ██╗ ██╗████████╗ ████████╗
+                    ╚██╗ ██╔╝╚══██╔══╝ ╚══██╔══╝
+                    ╚████╔╝ ██║ ██║
+                    ╚██╔╝ ██║ ██║
+                    ██║ ██║ ██║
+                    ╚═╝ ╚═╝ ╚═╝ VT-3000
+                    `;
+
+                    const COLORS = {
+                    boot: "color:#9E9E9E;font-weight:600",
+                    info: "color:#4CAF50;font-weight:600",
+                    warn: "color:#FFC107;font-weight:600",
+                    error: "color:#F44336;font-weight:600",
+                    module: "color:#7C4DFF;font-weight:600",
+                    page: "color:#03A9F4;font-weight:600",
+                    };
+
+                    function stamp() {
+                    const t = new Date();
+                    return `[${t.getHours()}:${String(t.getMinutes()).padStart(2, "0")}]`;
+                    }
+
+                    function dev(fn) {
+                    return (...args) => IS_DEV && fn(...args);
+                    }
+
+                    /* ==========================
+                    PERFORMANCE HELPERS
+                    ========================== */
+
+                    export function mark(name) {
+                    performance.mark(name);
+                    }
+
+                    function markExists(name) {
+                    return performance.getEntriesByName(name).length > 0;
+                    }
+
+                    export function measure(name, start, end) {
+                    try {
+                    if (!markExists(start) || !markExists(end)) {
+                    if (IS_DEV) {
+                    console.warn(
+                    `%c⚠ measure skipped: missing marks (${start} / ${end})`,
+                    "color:#FFC107"
+                    );
+                    }
+                    return;
+                    }
+
+                    performance.measure(name, start, end);
+
+                    const entry = performance.getEntriesByName(name).pop();
+
+                    log.info(`⏱ ${name}: ${entry.duration.toFixed(2)} ms`);
+
+                    // cleanup to avoid memory leak in long sessions
+                    performance.clearMarks(start);
+                    performance.clearMarks(end);
+                    performance.clearMeasures(name);
+                    } catch (e) {
+                    log.warn(`measure() failed: ${name}`);
+                    }
+                    }
+
+                    /* ==========================
+                    LOGGER API
+                    ========================== */
+
+                    export const log = {
+                    banner() {
+                    if (!IS_DEV) return;
+                    console.log(`%c${BANNER}`, "color:#7C4DFF;font-weight:bold");
+                    },
+
+                    boot: dev((msg) => console.log(`%c${stamp()} VT-3000 → ${msg}`, COLORS.boot)),
+
+                    page: dev((msg) => console.log(`%c${stamp()} [PAGE] ${msg}`, COLORS.page)),
+
+                    module: dev((msg) => console.log(`%c${stamp()} [MODULE] ${msg}`, COLORS.module)),
+
+                    info: dev((msg) => console.log(`%c${stamp()} ✓ ${msg}`, COLORS.info)),
+
+                    warn: dev((msg) => console.warn(`%c${stamp()} ⚠ ${msg}`, COLORS.warn)),
+
+                    error: dev((msg) => console.error(`%c${stamp()} ✖ ${msg}`, COLORS.error)),
+
+                    group(label) {
+                    if (!IS_DEV) return;
+                    console.groupCollapsed(`%c${label}`, "color:#B39DDB;font-weight:600");
+                    },
+
+                    groupEnd() {
+                    if (!IS_DEV) return;
+                    console.groupEnd();
+                    },
+                    };
+                    7)головний файлик)
+                    <!-- src\index.html -->
+                    <layout src="@components/templates/main/main.html" locals='{
+                      "title": "Home",
+                      "lang": "en",
+                      "active": "home "
+                    
+                    
+                    }'>
+
+                      <!-- 🔥 Page entry point -->
+                      <script type="module" src="/entries/page.index.js"></script>
+
+                      <block name="header">
+                        <include src="@components/layout/header/header.html" locals='{
+                          "active": "home",
+                          "home": "true"
+                        }'>
+                        </include>
+                      </block>
+
+
+                      <block name="main">
+                        <include src="@components/pages/home/home.html" locals='{}'></include>
+                      </block>
+
+                      <block name="footer">
+                        <include src="@components/layout/footer/footer.html" locals='{}'></include>
+                      </block>
+
+                    </layout>
+
+                    //========================================================================================================================================================
+                    Бро, про 500 сторінок я трохи загнув) Такі сайти довіряють великим студіям -- де працює багато людей
+                    !
+                    Так хочу :
+                    1️⃣ ідеальну архітектуру VT-3000 для 500 сторінок
+                    2️⃣ переписати modulesLoader (×10 швидше)
+                    3️⃣ оптимізувати vite.config.js
+                    4️⃣ додати auto page generation
+                    5️⃣ додати component CLI
+
+                    Але чи варто трохи змінити pages structure як ти писав вище -- src/pages
+                    home/index.html
+                    work/index.html
+                    work/cases/index.html
+                    work/team/index.html
+                    contacts/index.html
+
+                    Зараз папка src\components\pages мені зрозуміла! Що де писати для кожної сторінки! Що нам дасть коли
+                    переробимо цю папку ! Треба буде переробляти index.html і другі сторінки, а зараз все працює ! ЧИ
+                    ВАРТО ЦЕ РОБИТИ ? Мені вистачить щоб через шаблон можна верстати хоча б 50-100 сторінок ! А за інші
+                    модифікації я тільки ЗА
+
+                    //========================================================================================================================================================
+                    1)Даю мій скрипт модулів(відредагуй):
+                    /* src/js/modulesLoader.js */
+                    import { log, mark, measure } from "./services/logger.js";
+
+                    console.log("INIT MODULES LOADER");
+
+                    const IS_DEV = import.meta.env.DEV;
+                    const SLOW = 50;
+                    const CRITICAL = 120;
+
+                    /* =====================================================
+                    HELPERS
+                    ===================================================== */
+
+                    async function profileInit(loader, name, el = null, type = "MODULE") {
+                    const start = `mod:${type}:${name}:start`;
+                    const end = `mod:${type}:${name}:end`;
+
+                    mark(start);
+
+                    try {
+                    const mod = await loader();
+                    mod?.init?.(el);
+                    } catch (e) {
+                    log.error(`${type} FAIL → ${name}`);
+                    console.error(e);
+                    return;
+                    }
+
+                    mark(end);
+                    const entry = measure(`⏱ ${type} ${name}`, start, end);
+                    if (!entry || !IS_DEV) return;
+
+                    const time = entry.duration.toFixed(1);
+
+                    if (entry.duration > CRITICAL) {
+                    log.error(`${type} ${name} ⏱ ${time} ms ❌ CRITICAL`);
+                    } else if (entry.duration > SLOW) {
+                    log.warn(`${type} ${name} ⏱ ${time} ms ⚠ SLOW`);
+                    } else {
+                    log.module(`${type} ${name} ⏱ ${time} ms`);
+                    }
+                    }
+
+                    /* =====================================================
+                    AUTO REGISTRIES
+                    ===================================================== */
+
+                    // 🔥 CORE (все крім custom)
+                    const CORE_FILES = import.meta.glob(
+                    "../components/{layout,forms,effects,ui}/**/*.js",
+                    );
+
+                    // 🔥 CUSTOM
+                    const CUSTOM_FILES = import.meta.glob("../components/custom/**/*.js");
+
+                    // 🔥 LAYOUT (для data-module)
+                    const LAYOUT_FILES = import.meta.glob("../components/layout/**/*.js");
+
+                    function buildRegistry(files) {
+                    const registry = {};
+
+                    for (const path in files) {
+                    const parts = path.split("/");
+                    const file = parts[parts.length - 1];
+                    const name = file.replace(".js", "");
+
+                    registry[name] = files[path];
+                    }
+
+                    return registry;
+                    }
+
+                    const CORE_REGISTRY = buildRegistry(CORE_FILES);
+                    const CUSTOM_REGISTRY = buildRegistry(CUSTOM_FILES);
+                    const LAYOUT_REGISTRY = buildRegistry(LAYOUT_FILES);
+
+                    /* =====================================================
+                    CACHE (щоб не імпортувати 10 разів)
+                    ===================================================== */
+
+                    const loadedModules = new Set();
+
+                    /* =====================================================
+                    CORE INIT (data-ww-*)
+                    ===================================================== */
+
+                    async function initCoreModules() {
+                    log.group("CORE MODULES");
+
+                    const nodes = document.querySelectorAll("*");
+
+                    for (const el of nodes) {
+                    for (const attr of el.attributes) {
+                    if (!attr.name.startsWith("data-ww-")) continue;
+
+                    const name = attr.name.replace("data-ww-", "");
+
+                    const loader = CORE_REGISTRY[name];
+
+                    if (!loader) {
+                    if (IS_DEV) log.warn(`No CORE module → ${name}`);
+                    continue;
+                    }
+
+                    if (loadedModules.has(`core-${name}`)) continue;
+
+                    await profileInit(loader, name, el, "CORE");
+                    loadedModules.add(`core-${name}`);
+                    }
+                    }
+
+                    log.groupEnd();
+                    }
+
+                    /* =====================================================
+                    CUSTOM INIT (data-wwc-*)
+                    ===================================================== */
+
+                    async function initCustomModules() {
+                    log.group("CUSTOM MODULES");
+
+                    const nodes = document.querySelectorAll("*");
+
+                    for (const el of nodes) {
+                    for (const attr of el.attributes) {
+                    if (!attr.name.startsWith("data-wwc-")) continue;
+
+                    const name = attr.name.replace("data-wwc-", "");
+
+                    const loader = CUSTOM_REGISTRY[name];
+
+                    if (!loader) {
+                    if (IS_DEV) log.warn(`No CUSTOM module → ${name}`);
+                    continue;
+                    }
+
+                    if (loadedModules.has(`custom-${name}`)) continue;
+
+                    await profileInit(loader, name, el, "CUSTOM");
+                    loadedModules.add(`custom-${name}`);
+                    }
+                    }
+
+                    log.groupEnd();
+                    }
+
+                    /* =====================================================
+                    LAYOUT INIT (data-module="")
+                    ===================================================== */
+
+                    async function initLayoutModules() {
+                    const nodes = document.querySelectorAll("[data-module]");
+                    if (!nodes.length) return;
+
+                    log.group("LAYOUT MODULES");
+
+                    for (const el of nodes) {
+                    const name = el.dataset.module;
+                    const loader = LAYOUT_REGISTRY[name];
+
+                    if (!loader) {
+                    if (IS_DEV) log.warn(`No LAYOUT module → ${name}`);
+                    continue;
+                    }
+
+                    if (loadedModules.has(`layout-${name}`)) continue;
+
+                    await profileInit(loader, name, el, "LAYOUT");
+                    loadedModules.add(`layout-${name}`);
+                    }
+
+                    log.groupEnd();
+                    }
+
+                    /* =====================================================
+                    PUBLIC API
+                    ===================================================== */
+
+                    export async function initModules() {
+                    mark("modules:init:start");
+
+                    await initCoreModules();
+                    await initCustomModules();
+                    await initLayoutModules();
+
+                    mark("modules:init:end");
+                    measure("Modules init", "modules:init:start", "modules:init:end");
+                    }
+
+                    2)auto entries -- ти маєш написати скрипт !!??
+                    3)component CLI для чого це потрібно ??
+                    4)vite optimization -- мій файл конфігурації :
+                    /* vite.config.js */
+                    import { defineConfig } from "vite";
+                    import path from "node:path";
+                    import fg from "fast-glob";
+                    import htmlIncludePlugin from "./scripts/html-include-plugin.js";
+
+                    const rootDir = path.resolve(__dirname, "src");
+
+                    function htmlInputs() {
+                    const files = fg.sync(["src/*.html", "!src/dev-root.html"]);
+                    const input = {};
+
+                    for (const file of files) {
+                    const name = path.basename(file, ".html");
+                    input[name] = path.resolve(__dirname, file);
+                    }
+
+                    return input;
+                    }
+
+                    export default defineConfig(({ command, mode }) => {
+                    const isDev = command === "serve";
+                    const isProd = mode === "production";
+
+                    return {
+                    root: rootDir,
+                    base: "./",
+
+                    resolve: {
+                    alias: {
+                    "@components": path.resolve(rootDir, "components"),
+                    "@js": path.resolve(rootDir, "js"),
+                    "@styles": path.resolve(rootDir, "styles"),
+                    "@img": path.resolve(rootDir, "assets/img"),
+                    "@fonts": path.resolve(rootDir, "assets/fonts"), // 🔥 NEW
+                    },
+                    },
+
+                    css: {
+                    devSourcemap: isDev,
+                    preprocessorOptions: {
+                    scss: {
+                    additionalData: `@use "@styles/vars" as *;`,
+                    },
+                    },
+                    },
+
+                    plugins: [
+                    htmlIncludePlugin({
+                    root: rootDir,
+                    aliases: {
+                    "@components": "components",
+                    "@js": "js",
+                    "@styles": "styles",
+                    "@img": "assets/img",
+                    "@fonts": "assets/fonts", // 🔥 NEW
+                    },
+                    }),
+
+                    {
+                    name: "html-dev-flag",
+                    transformIndexHtml(html) {
+                    if (isDev) {
+                    return html.replace("<html", '<html class="is-dev"' ); } return html; }, }, ], build: { outDir:
+                      path.resolve(__dirname, "dist" ), emptyOutDir: true, sourcemap: true, // 🔥 для дебагу замовника
+                      minify: isProd ? "esbuild" : false, cssCodeSplit: true, rollupOptions: { input: htmlInputs(),
+                      output: { entryFileNames: "js/[name].[hash].js" , chunkFileNames: "js/[name].[hash].js" ,
+                      assetFileNames: (assetInfo)=> {
+                      const name = assetInfo.name ?? "";
+
+                      if (name.endsWith(".css")) {
+                      return "css/[name].[hash][extname]";
+                      }
+
+                      if (/\.(woff2?|ttf|otf)$/.test(name)) {
+                      return "assets/fonts/[name][extname]";
+                      }
+
+                      if (/\.(png|jpe?g|svg|webp|gif|ico)$/.test(name)) {
+                      return "assets/img/[name][extname]";
+                      }
+
+                      return "assets/[name][extname]";
+                      },
+
+                      manualChunks(id) {
+                      if (id.includes("node_modules")) {
+                      return "vendor";
+                      }
+
+                      if (id.includes("/components/")) {
+                      const parts = id.split("/");
+                      const compIndex = parts.indexOf("components");
+
+                      if (compIndex !== -1 && parts.length > compIndex + 2) {
+                      const type = parts[compIndex + 1];
+                      const name = parts[compIndex + 2];
+
+                      return `comp-${type}-${name}`;
+                      }
+                      }
+                      },
+                      },
+                      },
+                      },
+
+                      server: {
+                      open: true,
+                      },
+
+                      define: {
+                      __DEV__: isDev,
+                      __PROD__: isProd,
+                      },
+                      };
+                      });
+                      5)даю ще скрипт для побудови кастомних елементів :
+                      /* scripts\add-component.js */
+                      import fs from "fs";
+                      import path from "path";
+
+                      const name = process.argv[2];
+
+                      if (!name) {
+                      console.error("Component name is required");
+                      process.exit(1);
+                      }
+
+                      const baseDir = path.resolve("src/components/custom", name);
+
+                      if (fs.existsSync(baseDir)) {
+                      console.error("Component already exists: " + name);
+                      process.exit(1);
+                      }
+
+                      fs.mkdirSync(baseDir, { recursive: true });
+
+                      // ---------- HTML TEMPLATE (templater-ready) ----------
+                      const html = `<div class="${name}">
+                        {{#if icon}}
+                        <div class="${name}__icon">
+                          <img src="{{ icon }}" alt="{{ title }}">
+                        </div>
+                        {{/if}}
+
+                        <h3 class="${name}__title">{{ title }}</h3>
+
+                        <div class="${name}__content">
+                          {{ text }}
+                        </div>
+                      </div>
+                      `;
+
+                      // ---------- JS (inject + locals + render) ----------
+                      const js = `import raw from "./${name}.html?raw";
+                      import { renderTemplate } from "@/scripts/utils/render-template.js";
+
+                      export function init() {
+                      document.querySelectorAll("[data-wwc-${name}]").forEach((root) => {
+                      let locals = {};
+
+                      try {
+                      if (root.dataset.wwc${name.charAt(0).toUpperCase() + name.slice(1)}) {
+                      locals = JSON.parse(root.dataset.wwc${
+                      name.charAt(0).toUpperCase() + name.slice(1)
+                      });
+                      }
+                      } catch (e) {
+                      console.warn("[CUSTOM] invalid locals JSON for ${name}", e);
+                      }
+
+                      const html = renderTemplate(raw, locals);
+                      root.insertAdjacentHTML("beforeend", html);
+                      });
+
+                      console.log("[CUSTOM] ${name} init");
+                      }
+                      `;
+
+                      // ---------- SCSS ----------
+                      const scss = `[data-wwc-${name}] {
+                      .${name} {
+                      padding: 16px;
+                      border: 2px dashed #7e74f1;
+                      border-radius: 8px;
+                      }
+
+                      .${name}__title {
+                      margin-bottom: 8px;
+                      font-weight: 600;
+                      }
+                      }
+                      `;
+
+                      fs.writeFileSync(path.join(baseDir, `${name}.html`), html);
+                      fs.writeFileSync(path.join(baseDir, `${name}.js`), js);
+                      fs.writeFileSync(path.join(baseDir, `${name}.scss`), scss);
+
+                      console.log("Custom component created:", name);
+                      console.log("Path:", baseDir);
+                      6)Даю скрипт для створення нової сторінки в корені src і її компонентів в папці
+                      src\components\pages :
+                      /* scripts/create-page.js */
+                      import fs from "fs";
+                      import path from "path";
+
+                      const [, , sourcePage, newPage] = process.argv;
+
+                      if (!sourcePage || !newPage) {
+                      console.error("❌ Usage: npm run new
+                      <source>
+                      <name>");
+                        process.exit(1);
+                        }
+
+                        const SRC = path.resolve("src");
+                        const PAGES = path.join(SRC, "components", "pages");
+
+                        const sourceFile = path.join(SRC, `${sourcePage}.html`);
+                        const targetFile = path.join(SRC, `${newPage}.html`);
+
+                        if (!fs.existsSync(sourceFile)) {
+                        console.error(`❌ Source not found: ${sourcePage}.html`);
+                        process.exit(1);
+                        }
+
+                        if (fs.existsSync(targetFile)) {
+                        console.error(`❌ Page exists: ${newPage}.html`);
+                        process.exit(1);
+                        }
+
+                        const Title = newPage
+                        .split("-")
+                        .map((w) => w[0].toUpperCase() + w.slice(1))
+                        .join(" ");
+
+                        let content = fs.readFileSync(sourceFile, "utf-8");
+
+                        // чистимо коментарі
+                        content = content.replace(/<!--[\s\S]*?-->\s*/g, "");
+
+                        // title
+                        content = content.replace(/"title"\s*:\s*"[^"]+"/, `"title": "${Title}"`);
+
+                        // active
+                        content = content.replace(/"active"\s*:\s*"[^"]+"/g, `"active": "${newPage}"`);
+
+                        // home flag
+                        content = content.replace(
+                        /"home"\s*:\s*"[^"]+"/g,
+                        `"home": "${newPage === "index" ? "true" : "false"}"`,
+                        );
+
+                        // page include
+                        content = content.replace(
+                        /@components\/pages\/[^/]+\/[^.]+\.html/g,
+                        `@components/pages/${newPage}/${newPage}.html`,
+                        );
+
+                        fs.writeFileSync(targetFile, content, "utf-8");
+
+                        // page folder
+                        const dir = path.join(PAGES, newPage);
+                        fs.mkdirSync(dir, { recursive: true });
+
+                        fs.writeFileSync(
+                        path.join(dir, `${newPage}.html`),
+                        `<main class="page page--${newPage}">
+                          <h1>${Title}</h1>
+                        </main>
+                        `,
+                        );
+
+                        fs.writeFileSync(
+                        path.join(dir, `${newPage}.js`),
+                        `import "./${newPage}.scss";\n\n// ${newPage} page logic\n`,
+                        );
+
+                        fs.writeFileSync(path.join(dir, `${newPage}.scss`), `.page--${newPage} {\n\n}\n`);
+
+                        console.log(`✅ Page created: ${newPage}`);
+                        7)даю скрипт для спрайтів з шаблона :
+                        /* src\js\dev-icons.js */
+
+                        document.addEventListener("DOMContentLoaded", () => {
+                        const container = document.querySelector("[data-dev-icons]");
+                        if (!container) return;
+
+                        fetch("/assets/sprite.svg")
+                        .then((res) => res.text())
+                        .then((svgText) => {
+                        // 1️⃣ вставляємо sprite в DOM
+                        const wrap = document.createElement("div");
+                        wrap.style.display = "none";
+                        wrap.innerHTML = svgText;
+                        document.body.prepend(wrap);
+
+                        // 2️⃣ symbols тепер реально існують
+                        const symbols = wrap.querySelectorAll("symbol");
+
+                        symbols.forEach((symbol) => {
+                        const id = symbol.id;
+
+                        const item = document.createElement("div");
+                        item.className = "dev-icons__item";
+
+                        item.innerHTML = `
+                        <svg class="icon" viewBox="${symbol.getAttribute(" viewBox")}">
+                          <use href="#${id}"></use>
+                        </svg>
+                        <div class="dev-icons__name">${id}</div>
+                        `;
+
+                        item.addEventListener("click", () => {
+                        navigator.clipboard.writeText(
+                        `<svg class="icon icon--${id.replace(" icon-", "" )}">
+                          <use href="#${id}"></use>
+                        </svg>`,
+                        );
+                        });
+
+                        container.appendChild(item);
+                        });
+                        });
+                        });

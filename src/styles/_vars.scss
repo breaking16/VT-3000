@@ -1,20 +1,101 @@
 /* src/styles/_vars.scss */
 @use "sass:math";
-
+/* ************************************************************************************ Налаштування стилів за промовчуванням) ************************************************************************************ */
 /* Typography */
 $fontFamily: "Satoshi", system-ui, -apple-system, sans-serif;
-$fontSize: 14px;
-$mainColor: #111;
+$fontSize: 16;
 
-/* Layout */
-$minWidth: 320px;
-$maxWidth: 1920px;
+// Основні кольори
+$darkColor: #111;
+$mainColor: #fff;
 
-$containerWidth: 1170px;
-$containerPadding: 15px;
+/* ==================================================================================== Налаштування адаптивної сітки ==================================================================================== */
+/* Layout,мінімальна ширина сторінки */
+
+//Мінімальна ширина сторінки 
+$minWidth: 320;
+//Максимальна ширина сторінки 
+$maxWidth: 1920;
+//Ширина обмежуючого контейнера
+$maxWidthContainer: 1400;
+// Загальний горизонтальний відступ контейнера (left + right)
+$containerPadding: 30;
+
+// Половина для використання в padding-inline
+$containerPaddingSide: math.div($containerPadding, 2);
+
+// Ширина спрацювання першого breakpoint
+$containerWidth: $maxWidthContainer + $containerPadding;
+
 
 /* Breakpoints */
-$pc: 1200px;
-$tablet: 992px;
-$mobile: 768px;
-$mobileSmall: 480px;
+$pc: $containerWidth; // ПК, ноутбуки, деякі планшети в горизонтальному положенні
+$tablet: 991.98; // Планшети, деякі телефони в горизонтальному положенні
+$mobile: 767.98; // Телефони L
+$mobileSmall: 479.98; // S
+
+// Тип адаптива:
+// 1 = чуйність (у контейнера немає брейкпоінтів),
+// 2 = по брейк-поінтах (контейнер змінює свою ширину по брейк-поінтах)
+$responsiveType: 1;
+
+@if ($responsiveType==1) {
+
+  // Чуйна
+  [class*="__container"] {
+    @if ($maxWidthContainer>0) {
+      max-width: #{$containerWidth}px;
+      margin: 0 auto;
+    }
+
+    @if ($containerPadding>0) {
+      @if ($maxWidthContainer>0) {
+        padding-left: #{math.div($containerPadding, 2)}px;
+        padding-right: #{math.div($containerPadding, 2)}px;
+      }
+
+      @else {
+        @include adaptiveValue("padding-left", math.div($containerPadding, 2), 15);
+        @include adaptiveValue("padding-right", math.div($containerPadding, 2), 15);
+      }
+    }
+  }
+}
+
+@else {
+
+  // Брейк-поінтами
+  [class*="__container"] {
+    margin: 0 auto;
+
+    @if($maxWidthContainer>0) {
+      max-width: #{$maxWidthContainer}px;
+    }
+
+    @else {
+      @if ($containerPadding>0) {
+        padding-left: #{math.div($containerPadding, 2)}px;
+        padding-right: #{math.div($containerPadding, 2)}px;
+      }
+    }
+
+    @media (max-width: toEm($pc)) {
+      max-width: 970px;
+    }
+
+    @media (max-width: toEm($tablet)) {
+      max-width: 750px;
+    }
+
+    @media (max-width: toEm($mobile)) {
+      max-width: none;
+
+      @if ($containerPadding>0 and $maxWidthContainer>0) {
+        padding-left: #{math.div($containerPadding, 2)}px;
+        padding-right: #{math.div($containerPadding, 2)}px;
+      }
+    }
+  }
+}
+
+/* ************************************************************************************ Загальні стилі для всього сайту ************************************************************************************ */

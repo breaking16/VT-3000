@@ -1,5 +1,5 @@
 // src/components/layout/masonry/masonry.js
-import "./masonry.scss";
+import "./mansory.scss";
 import Isotope from "isotope-layout";
 
 export function init(root) {

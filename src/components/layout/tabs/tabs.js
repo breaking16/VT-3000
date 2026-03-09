@@ -1,5 +1,7 @@
 // src/components/layout/tabs/tabs.js
 
+import "./tabs.scss";
+
 export function init() {
   const blocks = document.querySelectorAll("[data-ww-tabs]");
   if (!blocks.length) return;
@@ -83,7 +85,7 @@ export function init() {
       block.dispatchEvent(
         new CustomEvent("tabs:change", {
           detail: { index },
-        })
+        }),
       );
     }
 
@@ -115,7 +117,7 @@ export function init() {
     // =========================
     block.addEventListener("keydown", (e) => {
       const current = [...titles].findIndex(
-        (t) => t.getAttribute("aria-selected") === "true"
+        (t) => t.getAttribute("aria-selected") === "true",
       );
 
       if (current < 0) return;

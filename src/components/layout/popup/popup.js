@@ -1,6 +1,8 @@
 // src/components/layout/popup/popup.js
 // ⬆️ ВЕРХ ФАЙЛУ (imports)
 
+import "./popup.scss";
+
 import { isEscape } from "@js/services/keyboard.js";
 import { lockBody, unlockBody } from "@js/services/body.js";
 import { saveFocus, restoreFocus } from "@js/services/focus.js";

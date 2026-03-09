@@ -1,4 +1,4 @@
-// src/js/dev-icons.js
+/* src\js\dev-icons.js */
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector("[data-dev-icons]");
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
           navigator.clipboard.writeText(
             `<svg class="icon icon--${id.replace("icon-", "")}">
   <use href="#${id}"></use>
-</svg>`
+</svg>`,
           );
         });
 

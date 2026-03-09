@@ -1,6 +1,8 @@
 // src/components/effects/preloader/preloader.js
 // ⬆️ весь файл
 
+import "./preloader.scss";
+
 export function init() {
   const preloader = document.querySelector("[data-preloader]");
   if (!preloader) return;

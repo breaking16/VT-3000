@@ -1,4 +1,4 @@
-// src\styles\base\_layout.scss
+/* src\styles\base\_layout.scss */
 @use "sass:math";
 @use "../vars" as *;
 
@@ -15,19 +15,25 @@
   flex: 1 1 auto;
 }
 
+// Фікс для слайдерів
+.wrapper>* {
+  min-width: 0;
+}
+
 /* ============================
    CONTAINERS
 ============================ */
 
 .container {
-  max-width: $containerWidth;
-  padding-inline: $containerPadding;
+  width: 100%;
+  max-width: #{$containerWidth}px;
+  padding-inline: #{$containerPaddingSide}px;
   margin-inline: auto;
 }
 
 .container-fluid {
   width: 100%;
-  padding-inline: $containerPadding;
+  padding-inline: #{$containerPadding}px;
 }
 
 /* ============================

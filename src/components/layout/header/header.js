@@ -1,4 +1,7 @@
 // src\components\layout\header\header.js
+
+import "./header.scss";
+
 export function init() {
   const header = document.querySelector("[data-ww-header]");
   if (!header) return;

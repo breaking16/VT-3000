@@ -1,3 +1,5 @@
+import "./fullpage.scss";
+
 export function init(root) {
   const sections = root.querySelectorAll(".fullpage__section");
   if (!sections.length) return;

@@ -6,6 +6,8 @@
 
 // src/components/effects/ripple/ripple.js
 
+import "./ripple.scss";
+
 export function init(root = document) {
   root.addEventListener("click", (e) => {
     const target = e.target.closest("[data-ww-ripple]");

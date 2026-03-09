@@ -1,592 +1,1234 @@
-Хочу налаштувати режим npm run build і видає помилку!
-walter@DESKTOP-4GG4SD7 MINGW64 ~/Desktop/VS/vt-3000 (master)
-$ npm run build
+Sky, hello! В мене в шаблоні є файли де підключаються всі стилі проекту! Дам тобі всі основні файли з папок style/scss, а ти проаналізуєш і скажеш які файли можна об`єнати, а які видалити чи перенести, а можливо створити додаткові папки з файлами для різних потреб в майбутньому при масштабуванні нашого шаблону! Домовились?
+Я кидаю тобі простиню з файлів від головного до другорядних, а ти кажеш що так а що не так !?
 
-> vt-3000@1.0.0 build
-> node scripts/clean-svg.js && node scripts/build-svg-sprite.js && node scripts/build-fonts.js && node scripts/build-preload.js && node scripts/build-favicons.js && node scripts/build-images.js && vite build
+/* ************************************************************************************ стилі впорядкування ************************************************************************************ */
+1)/* src/styles/style.scss */
 
-🧼 cleaned: arrow-down.svg
-🧼 cleaned: arrow-up.svg       
-🧼 cleaned: btn-right-black.svg
-🧼 cleaned: btn-right.svg      
-🧼 cleaned: control-left.svg   
-🧼 cleaned: control-right.svg  
-🧼 cleaned: favicon.svg     
-🧼 cleaned: footer-icon.svg 
-🧼 cleaned: heart-line.svg  
-🧼 cleaned: heart.svg       
-🧼 cleaned: id-card-line.svg
-🧼 cleaned: logo.svg        
-🧼 cleaned: search-line.svg 
-🧼 cleaned: search.svg      
-🧼 cleaned: social-01.svg     
-🧼 cleaned: social-02.svg     
-🧼 cleaned: social-03.svg     
-🧼 cleaned: social-04.svg     
-🧼 cleaned: user-star-line.svg
-🧼 cleaned: user.svg
-🧼 cleaned: website.svg
-✅ SVG icons cleaned   
-🧩 SVG sprite generated → src/assets/sprite.svg (21 icons)
-ℹ️ No font files — skipping
-⚡ preload.html generated
-🟣 favicons generated in public/
-🟣 favicons.html updated
-[images] Build started
-🖼 processing: cover.jpg
-[images] Found 99 HTML files
-[images] Build finished
-vite v5.4.21 building for production...
-✓ 8 modules transformed.
-x Build failed in 80ms
-error during build:
-Could not resolve "./entries/page.work-team.js" from "src/work-team.html"
-file: C:/Users/walter/Desktop/VS/vt-3000/src/work-team.html
-    at getRollupError (file:///C:/Users/walter/Desktop/VS/vt-3000/node_modules/rollup/dist/es/shared/parseAst.js:400:41)
-    at error (file:///C:/Users/walter/Desktop/VS/vt-3000/node_modules/rollup/dist/es/shared/parseAst.js:396:42)
-    at ModuleLoader.handleInvalidResolvedId (file:///C:/Users/walter/Desktop/VS/vt-3000/node_modules/rollup/dist/es/shared/node-entry.js:21666:24)
-    at file:///C:/Users/walter/Desktop/VS/vt-3000/node_modules/rollup/dist/es/shared/node-entry.js:21626:26
+@use "./fonts";
+/* Core */
+@use "./vars";
 
-walter@DESKTOP-4GG4SD7 MINGW64 ~/Desktop/VS/vt-3000 (master)
-$
-Шаблон має на кожній сторінці підвантажувати тільки той код js/css який там є ! Наприклад- на головній є спойлери і таби(папка src\components\layout\spollers і папка  src\components\layout\tabs) то при npm run dev має завнтажуватись тільки цей код і не треба тягнути всю логіку з усіх папок компонентів(src\components\effects, src\components\forms, src\components\layout) для кожної сторінки "про запас" !!!
-Режим npm run build має будувати папку dist з картинками, фавіконками, шрифтами!
-І він має будувати мінімізовані файли-js для кожного компонента що використаний на сайті і режим білда має будувати нормальний(не мінімізований файл-js)! Для дебагу інших розробників--дуже важливо! І так само з всіма файлами-css що були використані на сайті ! Має бути приблизно така структура : 
-+---dist
-|   |   contacts-map.html
-|   |   contacts-support.html
-|   |   contacts.html
-|   |   index.html
-|   |   work-cases.html
-|   |   work-team.html
-|   |   work.html
-|   |   
-|   +---assets
-|   |   +---fonts
-|   |   |       Chillax-Light.woff2
-|   |   |       Chillax-Medium.woff2
-|   |   |       Chillax-Regular.woff2
-|   |   |       Chillax-Semibold.woff2
-|   |   |       
-|   |   \---img
-|   |       |   cover-1200.webp
-|   |       |   cover-600.webp
-|   |       |   cover.jpg
-|   |       |   cover.webp
-|   |       |   logo.svg
-|   |       |   sprite.svg
-|   |       |   
-|   |       \---svgicons
-|   |               favicon.ico
-|   |               manifest.webmanifest
-|   |               
-|   +---css
-|   |       app.min.css
-|   |       aside.min.css
-|   |       beforeafter.min.css
-|   |       checkbox.min.css
-|   |       contacts-map.min.css
-|   |       dev-pages.min.css
-|   |       digcounter.min.css
-|   |       footer.min.css
-|   |       form.min.css
-|   |       fullpage.min.css
-|   |       gallery.min.css
-|   |       header.min.css
-|   |       input.min.css
-|   |       mansory.min.css
-|   |       map.min.css
-|   |       marquee.min.css
-|   |       menu.min.css
-|   |       overlay.min.css
-|   |       popup.min.css
-|   |       promo.min.css
-|   |       quantity.min.css
-|   |       radio.min.css
-|   |       showmore.min.css
-|   |       spollers.min.css
-|   |       tabs.min.css
-|   |       test.min.css
-|   |       vendor.min.css
-|   |       
-|   \---js
-|           app.min.js
-|           aside.min.js
-|           beforeafter.min.js
-|           checkbox.min.js
-|           dev-pages.min.js
-|           digcounter.min.js
-|           dynamic.min.js
-|           footer.min.js
-|           form.min.js
-|           fullpage.min.js
-|           gallery.min.js
-|           header.min.js
-|           input.min.js
-|           mansory.min.js
-|           map.min.js
-|           marquee.min.js
-|           menu.min.js
-|           menu.render.min.js
-|           modulepreload-polyfill.min.js
-|           overlay.min.js
-|           pagging.min.js
-|           popup.min.js
-|           promo.min.js
-|           quantity.min.js
-|           radio.min.js
-|           showmore.min.js
-|           spollers.min.js
-|           swiper.min.js
-|           tabs.min.js
-|           test.min.js
-|           vendor.min.js
+/* Mixins API */
+@use "./mixins/index" as *;
 
-Але ще мають бути повнорозмірні файли js/css ! Тільки ті що були використані на сайті ! Не всі з шаблону !!
+/* Base */
+@use "./base/null";
+@use "./base/layout";
+@use "./base/themes";
+@use "./base/colors";
+@use "./base/effects";
+@use "./base/utilities";
 
-/* ==================================================================================== Section ==================================================================================== */ 
-1) Вже прибрав ./entries/page.*.js з HTML
+/* Project settings */
+@use "./settings";
 
-<!-- ←←← src\work-team.html →→→ -->
-<layout src="@components/templates/main/main.html" locals='{
-  "title": "Work Team",
-  "lang": "en",
-  "active": "work-team"
+/* Dev only */
+@use "./dev";
 
 
+2)/* src/styles/settings.scss */
 
-}'>
-
-
-  <block name="header">
-    <include src="@components/layout/header/header.html" locals='{
-      "active": "work-team",
-      "home": "false",
-    }'>
-    </include>
-  </block>
-
-
-  <block name="main">
-    <include src="@components/pages/work-team/work-team.html" locals='{}'></include>
-  </block>
-
-  <block name="footer">
-    <include src="@components/layout/footer/footer.html" locals='{}'></include>
-  </block>
-
-</layout>
-
-2)Дозволити app.js керувати сторінками -- нам треба переписати app.js щоб весь css не вантажився! Ось мій файл:
-/* src\js\app.js */
-
-import { log, mark, measure } from "./services/logger.js";
-
-/* =====================
-   0️⃣ BOOT
-===================== */
-
-log.banner();
-log.boot("startup…");
-
-mark("app:start");
-
-/* =====================
-   1️⃣ GLOBAL STYLES
-===================== */
-
-mark("styles:start");
-
-import "../styles/style.scss";
-
-import.meta.glob("../components/custom/*/*.scss", { eager: true });
-import.meta.glob("../components/layout/*/*.scss", { eager: true });
-import.meta.glob("../components/ui/*/*.scss", { eager: true });
-import.meta.glob("../components/forms/*/*.scss", { eager: true });
-import.meta.glob("../components/effects/*/*.scss", { eager: true });
-
-mark("styles:end");
-measure("Styles loaded", "styles:start", "styles:end");
-
-/* =====================
-   2️⃣ INFRASTRUCTURE
-===================== */
-
-mark("infra:start");
-
-import { initModules } from "./modulesLoader.js";
-import { initWatcherPro } from "@components/effects/watcher-pro/watcher-pro.js";
-
-import { getTheme, setTheme } from "./services/theme.js";
-import { init as initThemeToggle } from "@components/ui/theme-toggle/theme-toggle.js";
-
-import { init as initRipple } from "@components/effects/ripple/ripple.js";
-
-import { init as initScrollTo } from "@components/effects/scrollto/scrollto.js";
-import { init as initScrollToPro } from "@components/effects/scrollto-pro/scrollto-pro.js";
-
-import { init as initPreloader } from "@components/effects/preloader/preloader.js";
-import { init as initCursor } from "@components/effects/cursor/cursor.js";
-import { init as initDarklite } from "@components/effects/darklite/darklite.js";
-
-mark("infra:end");
-measure("Infrastructure loaded", "infra:start", "infra:end");
-
-/* =====================
-   3️⃣ GLOBAL INIT
-===================== */
-
-log.group("Global init");
-mark("global:init:start");
-
-initWatcherPro();
-log.info("Watcher-PRO ready");
-
-initScrollTo();
-initPreloader();
-initDarklite();
-
-initScrollToPro();
-log.info("ScrollTo-PRO ready");
-
-setTheme(getTheme());
-initThemeToggle();
-log.info("Theme initialized");
-
-initRipple();
-// initCursor(); // optional
-
-mark("global:init:end");
-measure("Global init", "global:init:start", "global:init:end");
-
-log.groupEnd();
-
-/* =====================
-   4️⃣ PAGE-BASED JS
-===================== */
-
-const page = location.pathname.split("/").pop().replace(".html", "") || "index";
-
-mark(`page:${page}:start`);
-
-const pageMap = {
-  index: () => import("../components/pages/home/home.js"),
-  contacts: () => import("../components/pages/contacts/contacts.js"),
-  work: () => import("../components/pages/work/work.js"),
-  "dev-root": () => import("../components/pages/dev-root/dev-root.js"),
-};
-
-if (pageMap[page]) {
-  pageMap[page]()
-    .then(() => {
-      mark(`page:${page}:end`);
-      measure(`Page init: ${page}`, `page:${page}:start`, `page:${page}:end`);
-      log.page(`${page}.js loaded`);
-    })
-    .catch((e) => log.error(`[PAGE ERROR] ${page}`, e));
+/* Utility icon placeholder */
+.icon {
+   display: inline-block;
+   width: 1em;
+   height: 1em;
+   fill: currentColor;
+   stroke: currentColor;
 }
 
-/* =====================
-   5️⃣ DEV ONLY
-===================== */
-
-if (import.meta.env.DEV) {
-  import("./dev-icons.js").then(() => log.info("Dev icons loaded"));
-
-  import("./productivity/break-reminder.js")
-    .then((m) => {
-      m.initBreakReminder();
-      log.info("Break reminder active ⏳");
-    })
-    .catch((e) => log.warn("Break reminder failed", e));
+/* Reset helpers (REQUIRED by forms) */
+.btn-reset {
+   padding: 0;
+   border: none;
+   background: transparent;
+   cursor: pointer;
 }
 
-/* =====================
-   6️⃣ MODULES
-===================== */
+.input-reset {
+   appearance: none;
+   border: none;
+   background: transparent;
+   border-radius: 0;
+}
 
-mark("modules:init:start");
+3)/* src\styles\dev.scss */
+/* dev-only visibility */
+[data-dev-only] {
+  display: none;
+}
 
-initModules();
-log.info("Modules initialized");
+.is-dev [data-dev-only] {
+  display: block;
+}
 
-mark("modules:init:end");
-measure("Modules init", "modules:init:start", "modules:init:end");
+/* DEV toggle button */
+.dev-toggle {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9999;
+}
 
-/* =====================
-   🏁 APP READY
-===================== */
+.dev-toggle__btn {
+  background: #7e74f1;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
 
-mark("app:end");
-measure("APP TOTAL", "app:start", "app:end");
+.dev-toggle__btn:hover {
+  background: #6b62e6;
+}
+4)/* src/styles/_vars.scss */
+@use "sass:math";
+/* ************************************************************************************ Налаштування стилів за промовчуванням) ************************************************************************************ */
+/* Typography */
+$fontFamily: "Satoshi", system-ui, -apple-system, sans-serif;
+$fontSize: 14px;
 
-log.boot("ready 🚀");
-3) Перенести SCSS імпорти всередину компонентів -- в кожен компонент що має js і scss через import  додам стилі !
-4️⃣ Залишити Vite chunk system
+// Основні кольори
+$darkColor: #111;
+$mainColor: #fff;
+
+/* ==================================================================================== Налаштування адаптивної сітки ==================================================================================== */
+/* Layout,мінімальна ширина сторінки */
+
+//Мінімальна ширина сторінки 
+$minWidth: 320px;
+//Максимальна ширина сторінки 
+$maxWidth: 1920px;
+//Ширина обмежуючого контейнера
+$maxWidthContainer: 1400px;
+// Загальний горизонтальний відступ контейнера (left + right)
+$containerPadding: 30px;
+
+// Половина для використання в padding-inline
+$containerPaddingSide: math.div($containerPadding, 2);
+
+// Ширина спрацювання першого breakpoint
+$containerWidth: $maxWidthContainer + $containerPadding;
 
 
-Зараз build будує суто 7 файлів html без робочої сторінки !
-Короче -- треба білд який можна віддати замовнику як готовий проект для завантаження на хостинг з можливістю дебагінг! comprende ??
- файли vite.config.js і modulesLoader.js ти вже маєш ! якщо щось треба -- файли то кажи ! І ще питання -- ми можемо побудувати серйозний робочий білд на цій основі з тими запитами ??
+/* Breakpoints */
+$pc: $containerWidth; // ПК, ноутбуки, деякі планшети в горизонтальному положенні
+$tablet: 991.98px; // Планшети, деякі телефони в горизонтальному положенні
+$mobile: 767.98px; // Телефони L
+$mobileSmall: 479.98px; // S
 
- /* ==================================================================================== Section ==================================================================================== */
- 1)Вибираю B) Або повністю перепишемо vite.config під enterprise шаблон
- 2) Видали всі import.meta.glob(...scss), мій оновлений файл логіки(входу):
- /* src\js\app.js */
- 
- import { log, mark, measure } from "./services/logger.js";
- 
- /* =====================
-    0️⃣ BOOT
- ===================== */
- 
- log.banner();
- log.boot("startup…");
- 
- mark("app:start");
- 
- /* =====================
-    1️⃣ GLOBAL STYLES
- ===================== */
- 
- mark("styles:start");
- 
- import "../styles/style.scss";
- 
- 
- mark("styles:end");
- measure("Styles loaded", "styles:start", "styles:end");
- 
- /* =====================
-    2️⃣ INFRASTRUCTURE
- ===================== */
- 
- mark("infra:start");
- 
- import { initModules } from "./modulesLoader.js";
- import { initWatcherPro } from "@components/effects/watcher-pro/watcher-pro.js";
- 
- import { getTheme, setTheme } from "./services/theme.js";
- import { init as initThemeToggle } from "@components/ui/theme-toggle/theme-toggle.js";
- 
- import { init as initRipple } from "@components/effects/ripple/ripple.js";
- 
- import { init as initScrollTo } from "@components/effects/scrollto/scrollto.js";
- import { init as initScrollToPro } from "@components/effects/scrollto-pro/scrollto-pro.js";
- 
- import { init as initPreloader } from "@components/effects/preloader/preloader.js";
- import { init as initCursor } from "@components/effects/cursor/cursor.js";
- import { init as initDarklite } from "@components/effects/darklite/darklite.js";
- 
- mark("infra:end");
- measure("Infrastructure loaded", "infra:start", "infra:end");
- 
- /* =====================
-    3️⃣ GLOBAL INIT
- ===================== */
- 
- log.group("Global init");
- mark("global:init:start");
- 
- initWatcherPro();
- log.info("Watcher-PRO ready");
- 
- initScrollTo();
- initPreloader();
- initDarklite();
- 
- initScrollToPro();
- log.info("ScrollTo-PRO ready");
- 
- setTheme(getTheme());
- initThemeToggle();
- log.info("Theme initialized");
- 
- initRipple();
- // initCursor(); // optional
- 
- mark("global:init:end");
- measure("Global init", "global:init:start", "global:init:end");
- 
- log.groupEnd();
- 
- /* =====================
-    4️⃣ PAGE-BASED JS
- ===================== */
- 
- const page = location.pathname.split("/").pop().replace(".html", "") || "index";
- 
- mark(`page:${page}:start`);
- 
- const pageMap = {
-   index: () => import("../components/pages/home/home.js"),
-   contacts: () => import("../components/pages/contacts/contacts.js"),
-   work: () => import("../components/pages/work/work.js"),
-   "dev-root": () => import("../components/pages/dev-root/dev-root.js"),
- };
- 
- if (pageMap[page]) {
-   pageMap[page]()
-     .then(() => {
-       mark(`page:${page}:end`);
-       measure(`Page init: ${page}`, `page:${page}:start`, `page:${page}:end`);
-       log.page(`${page}.js loaded`);
-     })
-     .catch((e) => log.error(`[PAGE ERROR] ${page}`, e));
- }
- 
- /* =====================
-    5️⃣ DEV ONLY
- ===================== */
- 
- if (import.meta.env.DEV) {
-   import("./dev-icons.js").then(() => log.info("Dev icons loaded"));
- 
-   import("./productivity/break-reminder.js")
-     .then((m) => {
-       m.initBreakReminder();
-       log.info("Break reminder active ⏳");
-     })
-     .catch((e) => log.warn("Break reminder failed", e));
- }
- 
- /* =====================
-    6️⃣ MODULES
- ===================== */
- 
- mark("modules:init:start");
- 
- initModules();
- log.info("Modules initialized");
- 
- mark("modules:init:end");
- measure("Modules init", "modules:init:start", "modules:init:end");
- 
- /* =====================
-    🏁 APP READY
- ===================== */
- 
- mark("app:end");
- measure("APP TOTAL", "app:start", "app:end");
- 
- log.boot("ready 🚀");
- 
+// Тип адаптива:
+// 1 = чуйність (у контейнера немає брейкпоінтів),
+// 2 = по брейк-поінтах (контейнер змінює свою ширину по брейк-поінтах)
+$responsiveType: 1;
 
- 3)Перевір що app.js реально підключений в layout -- де це подивитись-перевірити в якому файлі?
- 4)Відредагуй(якщо треба-під новий білд) файл vite.config:
- /* vite.config.js */
-import { defineConfig } from "vite";
-import path from "node:path";
-import fg from "fast-glob";
-import htmlIncludePlugin from "./scripts/html-include-plugin.js";
+5)/* src\styles\_fonts.scss */
 
-const rootDir = path.resolve(__dirname, "src");
+/* AUTO-GENERATED — DO NOT EDIT */
 
-// 🔥 беремо ТІЛЬКИ реальні сторінки (без dev-root.html)
-function htmlInputs() {
-  const files = fg.sync(["src/*.html", "!src/dev-root.html"]);
-  const input = {};
 
-  for (const file of files) {
-    const name = path.basename(file, ".html");
-    input[name] = path.resolve(__dirname, file);
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi-Light";
+  src: url("/assets/fonts/Satoshi-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+  6)/* src\styles\mixins\_units.scss */
+@use "sass:math";
+
+@function rem($px, $base: 16) {
+  @return math.div($px, $base) * 1rem;
+}
+
+@function em($px, $base: 16) {
+  @return math.div($px, $base) * 1em;
+}
+
+// 🔥 ALIAS ДЛЯ СТАРИХ СНІПЕТІВ
+@function toRem($px, $base: 16) {
+  @return rem($px, $base);
+}
+
+@function toEm($px, $base: 16) {
+  @return em($px, $base);
+}
+
+7)/* src\styles\mixins\_media.scss */
+
+@mixin up($width) {
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin down($width) {
+  @media (max-width: $width) {
+    @content;
+  }
+}
+  8)/* src\styles\mixins\_layout.scss */
+// Adaptive grid cards
+// gridCards(fit, 280px, 1fr, 24px)
+
+@mixin gridCards($type: fit, $min: 280px, $max: 1fr, $gap: 24px) {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: repeat(auto-#{$type}, minmax($min, $max));
+}
+
+
+// Triangle helper — good for tooltips, dropdowns etc.
+@mixin triangle($direction, $color, $size, $size2: $size) {
+  width: 0;
+  height: 0;
+
+  @if $direction ==left {
+    border-top: $size2 solid transparent;
+    border-bottom: $size2 solid transparent;
+    border-right: $size solid $color;
   }
 
-  return input;
+  @if $direction ==right {
+    border-top: $size2 solid transparent;
+    border-bottom: $size2 solid transparent;
+    border-left: $size solid $color;
+  }
+
+  @if $direction ==top {
+    border-left: $size2 solid transparent;
+    border-right: $size2 solid transparent;
+    border-bottom: $size solid $color;
+  }
+
+  @if $direction ==bottom {
+    border-left: $size2 solid transparent;
+    border-right: $size2 solid transparent;
+    border-top: $size solid $color;
+  }
 }
 
-export default defineConfig(({ command, mode }) => {
-  const isDev = command === "serve";
-  const isProd = mode === "production";
+// src/styles/mixins/_index.scss
 
-  return {
-    root: rootDir,
-    base: "./",
+@forward "./units";
+@forward "./media";
 
-    resolve: {
-      alias: {
-        "@components": path.resolve(rootDir, "components"),
-        "@js": path.resolve(rootDir, "js"),
-        "@styles": path.resolve(rootDir, "styles"),
-        "@img": path.resolve(rootDir, "assets/img"),
-      },
-    },
+9)/* src\styles\mixins\_index.scss */
 
-    /* =====================
-    CSS / SOURCEMAPS
-    ===================== */
-    css: {
-      devSourcemap: isDev,
-      preprocessorOptions: {
-        scss: {
-          sourceMap: isDev,
-        },
-      },
-    },
+@forward "./units";
+@forward "./media";
+@forward "./adaptive";
 
-    plugins: [
-      // 🔥 PostHTML engine (include / each / if / blocks)
-      htmlIncludePlugin({
-        root: rootDir,
-        aliases: {
-          "@components": "components",
-          "@js": "js",
-          "@styles": "styles",
-          "@img": "assets/img",
-        },
-      }),
+10)/* src\styles\mixins\_content.scss */
+// Add currency symbol
+@mixin currency($symbol) {
+  &::after {
+    content: "#{$symbol}";
+  }
+}
 
-      // DEV flag → <html class="is-dev">
-      {
-        name: "html-dev-flag",
-        transformIndexHtml(html) {
-          if (isDev) {
-            return html.replace("<html", '<html class="is-dev"');
-          }
-          return html;
-        },
-      },
-    ],
+11)/* src\styles\mixins\_optional-adaptive.scss */
+@use "sass:math";
+@use "../vars" as *;
+@use "./units" as *;
 
-    /* =====================
-    BUILD (PRO)
-    ===================== */
-    build: {
-      outDir: path.resolve(__dirname, "dist"),
-      emptyOutDir: true,
+/*
+  Adaptive property via clamp()
+  Usage:
+  @include adaptiveValue(font-size, 32, 18);
+  @include adaptiveValue(padding-top, 120, 60, 1440, 480);
+*/
 
-      sourcemap: false, // ❌ sourcemaps у prod не потрібні
+@mixin adaptiveValue($property,
+  $startSize,
+  $minSize,
+  $widthFrom: $containerWidth,
+  $widthTo: $minWidth) {
 
-      rollupOptions: {
-        input: htmlInputs(),
+  // якщо значення однакові — просто ставимо фіксоване
+  @if $startSize ==$minSize {
+    #{$property}: toRem($startSize);
+  }
 
-        output: {
-          // 🔥 нормальна структура
-          entryFileNames: "assets/js/[name].[hash].js",
-          chunkFileNames: "assets/js/[name].[hash].js",
-          assetFileNames: ({ name }) => {
-            if (!name) return "assets/[name].[hash][extname]";
-            if (/\.(woff2?|ttf|otf)$/.test(name)) {
-              return "assets/fonts/[name][extname]";
-            }
-            if (/\.(png|jpe?g|svg|webp|gif|ico)$/.test(name)) {
-              return "assets/img/[name][extname]";
-            }
-            return "assets/[name].[hash][extname]";
-          },
-        },
-      },
-    },
+  @else {
 
-    server: {
-      open: true,
-    },
+    $slope: math.div(($startSize - $minSize), ($widthFrom - $widthTo));
+    $yIntersection: -$widthTo * $slope + $minSize;
 
-    define: {
-      __DEV__: isDev,
-      __PROD__: isProd,
-    },
-  };
-});
+    #{$property}: clamp(#{toRem($minSize)},
+      #{toRem($yIntersection)} + #{$slope * 100}vw,
+      #{toRem($startSize)});
 
-5)Додав import "./component.scss" у кожен js-компонент
+  }
+}
+
+12)/* src\styles\base\_utilities.scss */
+/* ============================
+   UTILITY SPACE MODIFIERS
+============================ */
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.no-top {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.no-bottom {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+13)/* src/styles/base/_themes.scss */
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+}
+
+html[data-theme="dark"] {
+  --bg: #0f0f0f;
+  --text: #f5f5f5;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+14)/* src/styles/base/_null.scss */
+@use "../vars" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+*::before,
+*::after {
+  display: inline-block;
+}
+
+/* Document */
+html,
+body {
+  height: 100%;
+  min-width: $minWidth;
+}
+
+html.lock,
+body.lock {
+  overflow: hidden;
+}
+
+body {
+  color: $darkColor;
+  font-family: $fontFamily;
+  font-size: $fontSize;
+  background-color: $mainColor;
+}
+
+body {
+  scrollbar-gutter: stable;
+  //text-rendering: optimizeLegibility;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  background-color: transparent;
+}
+
+input,
+textarea {
+  width: 100%;
+}
+
+label {
+  display: inline-block;
+}
+
+button,
+select,
+option {
+  cursor: pointer;
+}
+
+/* Media */
+img,
+video {
+  max-width: 100%;
+  display: block;
+  vertical-align: middle;
+}
+
+
+
+/* Links & lists */
+a {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+li,
+ol {
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+15)/* src\styles\base\_layout.scss */
+@use "sass:math";
+@use "../vars" as *;
+
+/* ============================
+   WRAPPER
+============================ */
+.wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper>main {
+  flex: 1 1 auto;
+}
+
+/* ============================
+   CONTAINERS
+============================ */
+
+.container {
+  width: 100%;
+  max-width: $maxWidthContainer;
+  padding-inline: $containerPaddingSide;
+  margin-inline: auto;
+}
+
+.container-fluid {
+  width: 100%;
+  padding-inline: $containerPadding;
+}
+
+/* ============================
+   PAGE SECTIONS
+============================ */
+
+$page-section-lg: 96px;
+$page-section-md: 72px;
+$page-section-sm: 48px;
+
+.page-section {
+  padding-block: $page-section-lg;
+
+  @media (max-width: 1024px) {
+    padding-block: $page-section-md;
+  }
+
+  @media (max-width: 768px) {
+    padding-block: $page-section-sm;
+  }
+}
+
+.page-section--tight {
+  padding-block: calc($page-section-sm * 0.75);
+}
+
+.page-section--wide {
+  padding-block: calc($page-section-lg * 1.35);
+}
+
+/* ============================
+   CONTENT WRAPPER
+============================ */
+
+$content-narrow: 760px;
+$content-default: 960px;
+
+.content-wrap {
+  max-width: $content-default;
+  margin-inline: auto;
+}
+
+.content-wrap--narrow {
+  max-width: $content-narrow;
+}
+
+.content-wrap--wide {
+  max-width: none;
+}
+
+16)/* src\styles\base\_effects.scss */
+[data-ww-watch] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes marqueeMove {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+17)/* src/styles/base/_colors.scss */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --color-primary-active: #0d0d0d;
+  --color-danger: #dc2626;
+
+
+  --text-primary: #111111;
+  --text-secondary: #666666;
+
+  --border-color: #e5e5e5;
+}
+
+18)/* src\scss\base\ripple.scss */
+[data-ripple] {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  animation: button-circle 1.5s ease forwards;
+}
+
+@keyframes button-circle {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(10);
+    opacity: 0;
+  }
+}
+
+19)/* src\scss\base\_hover.scss */
+
+/* =====================
+   Hover helpers
+===================== */
+
+@media (any-hover: hover) {
+  [data-hover-scale] {
+    transition: transform 0.25s ease;
+
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+
+  [data-hover-opacity] {
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  [data-hover-underline] {
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 1px;
+      background: currentColor;
+      transition: width 0.25s ease;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+}
+
+20)/* src\scss\base\_focus.scss */
+/* =====================
+   Focus ring (A11Y)
+===================== */
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Buttons, inputs, links */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-accent);
+}
+
+/* ************************************************************************************ Стилі -- структура ************************************************************************************ */
+
+Шаблон має бути універсальний і масштабований! Один раз зробив основні папки і стилі на тепер і на майбутнє і все! Щоб завжди пам`ятати де які файли лежать!
+Код основних файлів стилів ти вже маєш, а зараз даю тобі повністю структуру нашого шаблона:
+Folder PATH listing
+Volume serial number is 6CAD-DBB6
+C:.
+|   .gitignore
+|   .vt-activity.log
+|   .vt-deadline.json
+|   EXAMPLE.html
+|   EXAMPLE.js
+|   EXAMPLE.SCSS
+|   package.json
+|   README.md
+|   README_ARCHITECTURE.md
+|   structure.txt
+|   template.config.js
+|   vite.config.js
+|   
++---.vscode
+|       fls.code-snippets
+|       settings.json
+|       
++---backend
+|   |   README.md
+|   |   
+|   \---php
+|       +---api
+|       |       README.md
+|       |       
+|       \---sendmail
+|               README.md
+|               sendmail.php
+|               
++---public
+|   |   android-chrome-144x144.png
+|   |   android-chrome-192x192.png
+|   |   android-chrome-256x256.png
+|   |   android-chrome-36x36.png
+|   |   android-chrome-384x384.png
+|   |   android-chrome-48x48.png
+|   |   android-chrome-512x512.png
+|   |   android-chrome-72x72.png
+|   |   android-chrome-96x96.png
+|   |   apple-touch-icon-1024x1024.png
+|   |   apple-touch-icon-114x114.png
+|   |   apple-touch-icon-120x120.png
+|   |   apple-touch-icon-144x144.png
+|   |   apple-touch-icon-152x152.png
+|   |   apple-touch-icon-167x167.png
+|   |   apple-touch-icon-180x180.png
+|   |   apple-touch-icon-57x57.png
+|   |   apple-touch-icon-60x60.png
+|   |   apple-touch-icon-72x72.png
+|   |   apple-touch-icon-76x76.png
+|   |   apple-touch-icon-precomposed.png
+|   |   apple-touch-icon.png
+|   |   favicon-16x16.png
+|   |   favicon-32x32.png
+|   |   favicon-48x48.png
+|   |   favicon.ico
+|   |   manifest.webmanifest
+|   |   
+|   \---assets
+|       |   sprite.svg
+|       |   
+|       \---img
+|           \---cover
+|                   cover-1200.webp
+|                   cover-600.webp
+|                   cover.webp
+|                   test-auto.png
+|                   
++---scripts
+|       activity-watcher.js
+|       add-component.js
+|       break-reminder.js
+|       build-dev-pages.js
+|       build-favicons.js
+|       build-fonts.js
+|       build-images.js
+|       build-preload.js
+|       build-svg-sprite.js
+|       build-zip.js
+|       clean-svg.js
+|       create-page.js
+|       html-include-plugin.js
+|       layout-engine.js
+|       online.js
+|       posthtml-engine.js
+|       projectpage.js
+|       stat-build.js
+|       stat.js
+|       
+\---src
+    |   contacts-map.html
+    |   contacts-support.html
+    |   contacts.html
+    |   dev-root.html
+    |   index.html
+    |   work-cases.html
+    |   work-team.html
+    |   work.html
+    |   
+    +---assets
+    |   |   sprite.svg
+    |   |   
+    |   +---data
+    |   |       menu.docs.json
+    |   |       menu.json
+    |   |       menu.main.json
+    |   |       menu.shop.json
+    |   |       
+    |   +---files
+    |   +---fonts
+    |   |       Satoshi-Bold.woff2
+    |   |       Satoshi-Light.woff2
+    |   |       Satoshi-Medium.woff2
+    |   |       Satoshi-Regular.woff2
+    |   |       
+    |   +---img
+    |   |       cover.jpg
+    |   |       cover.webp
+    |   |       logo.svg
+    |   |       
+    |   +---svgicons
+    |   |       arrow-down.svg
+    |   |       arrow-up.svg
+    |   |       btn-right-black.svg
+    |   |       btn-right.svg
+    |   |       control-left.svg
+    |   |       control-right.svg
+    |   |       favicon.png
+    |   |       favicon.svg
+    |   |       footer-icon.svg
+    |   |       heart-line.svg
+    |   |       heart.svg
+    |   |       id-card-line.svg
+    |   |       logo.svg
+    |   |       search-line.svg
+    |   |       search.svg
+    |   |       social-01.svg
+    |   |       social-02.svg
+    |   |       social-03.svg
+    |   |       social-04.svg
+    |   |       user-star-line.svg
+    |   |       user.svg
+    |   |       website.svg
+    |   |       
+    |   \---video
+    +---components
+    |   +---custom
+    |   |   +---aside
+    |   |   |       aside.html
+    |   |   |       aside.js
+    |   |   |       aside.scss
+    |   |   |       
+    |   |   +---promo
+    |   |   |       promo.html
+    |   |   |       promo.js
+    |   |   |       promo.scss
+    |   |   |       
+    |   |   \---test
+    |   |           test.html
+    |   |           test.js
+    |   |           test.json
+    |   |           test.scss
+    |   |           
+    |   +---dev
+    |   |       button-preview.html
+    |   |       checkbox-preview.html
+    |   |       colors-preview.html
+    |   |       da-preview.html
+    |   |       focus-preview.html
+    |   |       footer-preview.html
+    |   |       fullpage-preview.html
+    |   |       gallery-preview.html
+    |   |       grid-container-preview.html
+    |   |       header-preview.html
+    |   |       hover-preview.html
+    |   |       icons-preview.html
+    |   |       layout-core.html
+    |   |       layout-grid-preview.html
+    |   |       loader-preview.html
+    |   |       mansory-preview.html
+    |   |       pages-list.html
+    |   |       pagging-preview.html
+    |   |       quantity-preview.html
+    |   |       radio-preview.html
+    |   |       range-preview.html
+    |   |       rating-preview.html
+    |   |       ripple-preview.html
+    |   |       scrollto-pro.html
+    |   |       section-preview.html
+    |   |       select-preview.html
+    |   |       showmore-preview.html
+    |   |       skeleton-preview.html
+    |   |       spollers-preview.html
+    |   |       swiper-preview.html
+    |   |       tabs-preview.html
+    |   |       theme-preview.html
+    |   |       watcher-pro.html
+    |   |       
+    |   +---effects
+    |   |   +---cursor
+    |   |   |       cursor.js
+    |   |   |       cursor.scss
+    |   |   |       
+    |   |   +---darklite
+    |   |   |       darklite.js
+    |   |   |       darklite.scss
+    |   |   |       
+    |   |   +---gsap
+    |   |   +---marquee
+    |   |   |       marquee.html
+    |   |   |       marquee.js
+    |   |   |       marquee.scss
+    |   |   |       
+    |   |   +---mouse
+    |   |   +---parallax
+    |   |   +---preloader
+    |   |   |       preloader.html
+    |   |   |       preloader.js
+    |   |   |       preloader.scss
+    |   |   |       
+    |   |   +---ripple
+    |   |   |       ripple.js
+    |   |   |       ripple.scss
+    |   |   |       
+    |   |   +---screenshot
+    |   |   +---scrollto
+    |   |   |       scrollto.html
+    |   |   |       scrollto.js
+    |   |   |       
+    |   |   +---scrollto-pro
+    |   |   |       scrollto-pro.html
+    |   |   |       scrollto-pro.js
+    |   |   |       
+    |   |   +---splittype
+    |   |   +---tippy
+    |   |   \---watcher-pro
+    |   |           watcher-pro.js
+    |   |           
+    |   +---forms
+    |   |   +---button
+    |   |   |       button.scss
+    |   |   |       
+    |   |   +---checkbox
+    |   |   |       checkbox.html
+    |   |   |       checkbox.js
+    |   |   |       checkbox.scss
+    |   |   |       
+    |   |   +---datepicker
+    |   |   +---form
+    |   |   |       form.html
+    |   |   |       form.js
+    |   |   |       form.scss
+    |   |   |       validation.js
+    |   |   |       
+    |   |   +---input
+    |   |   |       input.html
+    |   |   |       input.js
+    |   |   |       input.scss
+    |   |   |       
+    |   |   +---quantity
+    |   |   |       quantity.html
+    |   |   |       quantity.js
+    |   |   |       quantity.scss
+    |   |   |       
+    |   |   +---radio
+    |   |   |       radio.html
+    |   |   |       radio.js
+    |   |   |       radio.scss
+    |   |   |       
+    |   |   +---range
+    |   |   |       range.html
+    |   |   |       range.js
+    |   |   |       range.scss
+    |   |   |       
+    |   |   +---rating
+    |   |   |       rating.html
+    |   |   |       rating.js
+    |   |   |       rating.scss
+    |   |   |       
+    |   |   +---select
+    |   |   |       select.html
+    |   |   |       select.js
+    |   |   |       select.scss
+    |   |   |       
+    |   |   \---skeleton
+    |   |           skeleton.scss
+    |   |           
+    |   +---layout
+    |   |   +---beforeafter
+    |   |   |       beforeafter.html
+    |   |   |       beforeafter.js
+    |   |   |       beforeafter.scss
+    |   |   |       
+    |   |   +---dev-pages
+    |   |   |       dev-pages.html
+    |   |   |       dev-pages.js
+    |   |   |       dev-pages.scss
+    |   |   |       
+    |   |   +---digcounter
+    |   |   |       digcounter.html
+    |   |   |       digcounter.js
+    |   |   |       digcounter.scss
+    |   |   |       
+    |   |   +---dynamic
+    |   |   |       dynamic.js
+    |   |   |       dynamic.scss
+    |   |   |       
+    |   |   +---favicons
+    |   |   |       favicons.html
+    |   |   |       
+    |   |   +---footer
+    |   |   |       footer.html
+    |   |   |       footer.js
+    |   |   |       footer.scss
+    |   |   |       
+    |   |   +---fullpage
+    |   |   |       fullpage.html
+    |   |   |       fullpage.js
+    |   |   |       fullpage.scss
+    |   |   |       
+    |   |   +---gallery
+    |   |   |       gallery.html
+    |   |   |       gallery.js
+    |   |   |       gallery.scss
+    |   |   |       
+    |   |   +---grid-container
+    |   |   |       grid-container.html
+    |   |   |       grid-container.scss
+    |   |   |       
+    |   |   +---head
+    |   |   |       head.html
+    |   |   |       meta.html
+    |   |   |       preload.html
+    |   |   |       scripts.html
+    |   |   |       
+    |   |   +---header
+    |   |   |       header-js.html
+    |   |   |       header.html
+    |   |   |       header.js
+    |   |   |       header.scss
+    |   |   |       
+    |   |   +---mansory
+    |   |   |       mansory.html
+    |   |   |       mansory.js
+    |   |   |       mansory.scss
+    |   |   |       
+    |   |   +---map
+    |   |   |       map.js
+    |   |   |       map.scss
+    |   |   |       
+    |   |   +---menu
+    |   |   |       menu.dynamic.html
+    |   |   |       menu.html
+    |   |   |       menu.js
+    |   |   |       menu.render.js
+    |   |   |       menu.scss
+    |   |   |       menu.simple.html
+    |   |   |       menu.static.html
+    |   |   |       
+    |   |   +---overlay
+    |   |   |       overlay.html
+    |   |   |       overlay.js
+    |   |   |       overlay.scss
+    |   |   |       
+    |   |   +---pagging
+    |   |   |       pagging.html
+    |   |   |       pagging.js
+    |   |   |       pagging.scss
+    |   |   |       
+    |   |   +---popup
+    |   |   |       popup.html
+    |   |   |       popup.js
+    |   |   |       popup.scss
+    |   |   |       
+    |   |   +---showmore
+    |   |   |       showmore.html
+    |   |   |       showmore.js
+    |   |   |       showmore.scss
+    |   |   |       
+    |   |   +---slider
+    |   |   +---spollers
+    |   |   |       spollers.html
+    |   |   |       spollers.js
+    |   |   |       spollers.scss
+    |   |   |       
+    |   |   +---swiper
+    |   |   |       swiper.html
+    |   |   |       swiper.js
+    |   |   |       swiper.scss
+    |   |   |       
+    |   |   \---tabs
+    |   |           tabs.html
+    |   |           tabs.js
+    |   |           tabs.scss
+    |   |           
+    |   +---other
+    |   |   \---components
+    |   |           components.html
+    |   |           
+    |   +---pages
+    |   |   +---contacts
+    |   |   |       contacts.html
+    |   |   |       contacts.js
+    |   |   |       contacts.scss
+    |   |   |       
+    |   |   +---contacts-map
+    |   |   |       contacts-map.html
+    |   |   |       contacts-map.js
+    |   |   |       contacts-map.scss
+    |   |   |       
+    |   |   +---contacts-support
+    |   |   |       contacts-support.html
+    |   |   |       contacts-support.js
+    |   |   |       contacts-support.scss
+    |   |   |       
+    |   |   +---dev-root
+    |   |   |       dev-root.js
+    |   |   |       
+    |   |   +---home
+    |   |   |       home.html
+    |   |   |       home.js
+    |   |   |       home.scss
+    |   |   |       
+    |   |   +---index
+    |   |   |       index.js
+    |   |   |       
+    |   |   +---work
+    |   |   |       work.html
+    |   |   |       work.js
+    |   |   |       work.scss
+    |   |   |       
+    |   |   +---work-cases
+    |   |   |       work-cases.html
+    |   |   |       work-cases.js
+    |   |   |       work-cases.scss
+    |   |   |       
+    |   |   \---work-team
+    |   |           work-team.html
+    |   |           work-team.js
+    |   |           work-team.scss
+    |   |           
+    |   +---templates
+    |   |   +---dev
+    |   |   |       dev.html
+    |   |   |       
+    |   |   +---inner
+    |   |   |       inner.html
+    |   |   |       inner.js
+    |   |   |       inner.scss
+    |   |   |       
+    |   |   +---main
+    |   |   |       main.html
+    |   |   |       main.js
+    |   |   |       main.scss
+    |   |   |       
+    |   |   \---projectpage
+    |   |           projectpage.html
+    |   |           
+    |   +---ui
+    |   |   +---loader
+    |   |   |       loader.scss
+    |   |   |       
+    |   |   +---theme-toggle
+    |   |   |       theme-toggle.html
+    |   |   |       theme-toggle.js
+    |   |   |       theme-toggle.scss
+    |   |   |       
+    |   |   \---tooltip
+    |   |           tooltip.js
+    |   |           tooltip.scss
+    |   |           
+    |   \---wordpress
+    +---copy
+    |   |   contacts-map.html
+    |   |   contacts-support.html
+    |   |   contacts.html
+    |   |   index.html
+    |   |   work-cases.html
+    |   |   work-team.html
+    |   |   work.html
+    |   |   
+    |   +---contacts
+    |   |       contacts.html
+    |   |       contacts.js
+    |   |       contacts.scss
+    |   |       
+    |   +---contacts-map
+    |   |       contacts-map.html
+    |   |       contacts-map.js
+    |   |       contacts-map.scss
+    |   |       
+    |   +---contacts-support
+    |   |       contacts-support.html
+    |   |       contacts-support.js
+    |   |       contacts-support.scss
+    |   |       
+    |   +---index
+    |   |       index.js
+    |   |       
+    |   +---work
+    |   |       work.html
+    |   |       work.js
+    |   |       work.scss
+    |   |       
+    |   +---work-cases
+    |   |       work-cases.html
+    |   |       work-cases.js
+    |   |       work-cases.scss
+    |   |       
+    |   \---work-team
+    |           work-team.html
+    |           work-team.js
+    |           work-team.scss
+    |           
+    +---entries
+    |       page.contacts-map.js
+    |       page.contacts-support.js
+    |       page.contacts.js
+    |       page.index.js
+    |       page.work-cases.js
+    |       page.work-team.js
+    |       page.work.js
+    |       
+    +---js
+    |   |   app.js
+    |   |   asset-entry.js
+    |   |   dev-icons.js
+    |   |   modulesLoader.js
+    |   |   
+    |   +---frameworks
+    |   |   +---react
+    |   |   \---vue
+    |   +---productivity
+    |   |       break-reminder.js
+    |   |       
+    |   +---services
+    |   |       body.js
+    |   |       events.js
+    |   |       focus.js
+    |   |       gsap.js
+    |   |       keyboard.js
+    |   |       logger.js
+    |   |       media.js
+    |   |       scroll.js
+    |   |       splittype.js
+    |   |       theme.js
+    |   |       
+    |   \---utils
+    |           body-lock.js
+    |           debounce.js
+    |           dom.js
+    |           index.js
+    |           render-template.js
+    |           slide.js
+    |           throttle.js
+    |           
+    +---pug
+    |   \---components
+    +---scss
+    |   \---base
+    |           ripple.scss
+    |           _focus.scss
+    |           _hover.scss
+    |           
+    \---styles
+        |   dev.scss
+        |   settings.scss
+        |   style.scss
+        |   _fonts.scss
+        |   _vars.scss
+        |   
+        +---base
+        |       _colors.scss
+        |       _effects.scss
+        |       _layout.scss
+        |       _null.scss
+        |       _themes.scss
+        |       _utilities.scss
+        |       
+        +---includes
+        |       mix.scss
+        |       
+        \---mixins
+                _adaptive.scss
+                _content.scss
+                _index.scss
+                _layout.scss
+                _media.scss
+                _units.scss
+                
+Ти накресли також структуру--куда і які файли я маю поперекидувати чи які нові файли і папки маю створити !! ok ?

@@ -1,3 +1,5 @@
+import "./gallery.scss";
+
 export function init(el) {
   if (!el) return;
 

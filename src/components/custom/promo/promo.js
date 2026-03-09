@@ -1,3 +1,5 @@
+import "./promo.scss";
+
 import html from "./promo.html?raw";
 
 export function init() {

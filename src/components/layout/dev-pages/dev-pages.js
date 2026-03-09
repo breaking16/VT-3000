@@ -1,4 +1,7 @@
 /* src\components\layout\dev-pages\dev-pages.js */
+
+import "./dev-pages.scss";
+
 export function init() {
   const root = document.querySelector("[data-dev-pages]");
   if (!root) return;

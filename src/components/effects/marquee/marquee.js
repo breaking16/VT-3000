@@ -1,5 +1,7 @@
 // src/components/effects/marquee/marquee.js
 
+import "./marquee.scss";
+
 const GROUPS = new Map();
 
 export function init() {

@@ -1,0 +1,34 @@
+/* src\styles\mixins\_optional-adaptive.scss */
+@use "sass:math";
+@use "../vars" as *;
+@use "./units" as *;
+
+/*
+  Adaptive property via clamp()
+  Usage:
+  @include adaptiveValue(font-size, 32, 18);
+  @include adaptiveValue(padding-top, 120, 60, 1440, 480);
+*/
+
+@mixin adaptiveValue($property,
+  $startSize,
+  $minSize,
+  $widthFrom: $containerWidth,
+  $widthTo: $minWidth) {
+
+  // якщо значення однакові — просто ставимо фіксоване
+  @if $startSize ==$minSize {
+    #{$property}: toRem($startSize);
+  }
+
+  @else {
+
+    $slope: math.div(($startSize - $minSize), ($widthFrom - $widthTo));
+    $yIntersection: -$widthTo * $slope + $minSize;
+
+    #{$property}: clamp(#{toRem($minSize)},
+      #{toRem($yIntersection)} + #{$slope * 100}vw,
+      #{toRem($startSize)});
+
+  }
+}

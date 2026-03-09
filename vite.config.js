@@ -6,7 +6,6 @@ import htmlIncludePlugin from "./scripts/html-include-plugin.js";
 
 const rootDir = path.resolve(__dirname, "src");
 
-// 🔥 беремо ТІЛЬКИ реальні сторінки (без dev-root.html)
 function htmlInputs() {
   const files = fg.sync(["src/*.html", "!src/dev-root.html"]);
   const input = {};
@@ -33,23 +32,20 @@ export default defineConfig(({ command, mode }) => {
         "@js": path.resolve(rootDir, "js"),
         "@styles": path.resolve(rootDir, "styles"),
         "@img": path.resolve(rootDir, "assets/img"),
+        "@fonts": path.resolve(rootDir, "assets/fonts"), // 🔥 NEW
       },
     },
 
-    /* =====================
-    CSS / SOURCEMAPS
-    ===================== */
     css: {
       devSourcemap: isDev,
       preprocessorOptions: {
         scss: {
-          sourceMap: isDev,
+          additionalData: `@use "@styles/vars" as *;`,
         },
       },
     },
 
     plugins: [
-      // 🔥 PostHTML engine (include / each / if / blocks)
       htmlIncludePlugin({
         root: rootDir,
         aliases: {
@@ -57,10 +53,10 @@ export default defineConfig(({ command, mode }) => {
           "@js": "js",
           "@styles": "styles",
           "@img": "assets/img",
+          "@fonts": "assets/fonts", // 🔥 NEW
         },
       }),
 
-      // DEV flag → <html class="is-dev">
       {
         name: "html-dev-flag",
         transformIndexHtml(html) {
@@ -72,31 +68,56 @@ export default defineConfig(({ command, mode }) => {
       },
     ],
 
-    /* =====================
-    BUILD (PRO)
-    ===================== */
     build: {
       outDir: path.resolve(__dirname, "dist"),
       emptyOutDir: true,
 
-      sourcemap: false, // ❌ sourcemaps у prod не потрібні
+      sourcemap: true, // 🔥 для дебагу замовника
+      minify: isProd ? "esbuild" : false,
+
+      cssCodeSplit: true,
 
       rollupOptions: {
         input: htmlInputs(),
 
         output: {
-          // 🔥 нормальна структура
-          entryFileNames: "assets/js/[name].[hash].js",
-          chunkFileNames: "assets/js/[name].[hash].js",
-          assetFileNames: ({ name }) => {
-            if (!name) return "assets/[name].[hash][extname]";
+          entryFileNames: "js/[name].[hash].js",
+          chunkFileNames: "js/[name].[hash].js",
+
+          assetFileNames: (assetInfo) => {
+            const name = assetInfo.name ?? "";
+
+            if (name.endsWith(".css")) {
+              return "css/[name].[hash][extname]";
+            }
+
             if (/\.(woff2?|ttf|otf)$/.test(name)) {
               return "assets/fonts/[name][extname]";
             }
+
             if (/\.(png|jpe?g|svg|webp|gif|ico)$/.test(name)) {
               return "assets/img/[name][extname]";
             }
-            return "assets/[name].[hash][extname]";
+
+            return "assets/[name][extname]";
+          },
+
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              return "vendor";
+            }
+
+            if (id.includes("/components/")) {
+              const parts = id.split("/");
+              const compIndex = parts.indexOf("components");
+
+              if (compIndex !== -1 && parts.length > compIndex + 2) {
+                const type = parts[compIndex + 1];
+                const name = parts[compIndex + 2];
+
+                return `comp-${type}-${name}`;
+              }
+            }
           },
         },
       },

@@ -7,53 +7,55 @@
       <span class="menu__logo">VT-3000</span>
       <button class="menu__close" data-ww-menu-close>✕</button>
     </div>
+    <nav class="menu__body">
+      <ul class="menu__list">
 
-    <ul class="menu__list">
+        <!-- Home -->
+        <li>
+          <a href="/index.html">Home</a>
+        </li>
 
-      <!-- Home -->
-      <li>
-        <a href="/index.html">Home</a>
-      </li>
+        <!-- Work -->
+        <li class="has-submenu">
+          <a class="menu__link" href="/work.html">Work</a>
+          <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
 
-      <!-- Work -->
-      <li class="has-submenu">
-        <a class="menu__link" href="/work.html">Work</a>
-        <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
+          <ul class="menu__sublist">
+            <li>
+              <a href="/work-team.html">Team</a>
+            </li>
 
-        <ul class="menu__sublist">
-          <li>
-            <a href="/work-team.html">Team</a>
-          </li>
+            <li class="has-submenu">
+              <a href="/work-cases.html">Cases</a>
+              <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
 
-          <li class="has-submenu">
-            <a href="/work-cases.html">Cases</a>
-            <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
+              <ul class="menu__sublist">
+                <li>
+                  <a href="/work-cases.html">All cases</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
 
-            <ul class="menu__sublist">
-              <li>
-                <a href="/work-cases.html">All cases</a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
+        <!-- Contacts -->
+        <li class="has-submenu">
+          <a class="menu__link" href="/contacts.html">Contacts</a>
+          <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
 
-      <!-- Contacts -->
-      <li class="has-submenu">
-        <a class="menu__link" href="/contacts.html">Contacts</a>
-        <button class="menu__arrow" type="button" aria-label="Open submenu"></button>
+          <ul class="menu__sublist">
+            <li>
+              <a href="/contacts-support.html">Support</a>
+            </li>
+            <li>
+              <a href="/contacts-map.html">Map</a>
+            </li>
+          </ul>
+        </li>
 
-        <ul class="menu__sublist">
-          <li>
-            <a href="/contacts-support.html">Support</a>
-          </li>
-          <li>
-            <a href="/contacts-map.html">Map</a>
-          </li>
-        </ul>
-      </li>
+      </ul>
+    </nav>
 
-    </ul>
 
 
 

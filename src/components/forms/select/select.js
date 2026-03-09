@@ -1,3 +1,5 @@
+import "./select.scss";
+
 export function init(root = document) {
   const selects = root.querySelectorAll("[data-ww-select]");
   if (!selects.length) return;
